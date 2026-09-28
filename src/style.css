@@ -1,0 +1,81 @@
+:root {
+  --bg: #0a0908;
+  --panel: #121110;
+  --ink: #f4f1ec;
+  --ink-60: rgba(244, 241, 236, 0.6);
+  --hair: rgba(244, 241, 236, 0.08);
+  --r-shell: 36px;
+  --gutter: 16px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shell {
+  margin: var(--gutter);
+  min-height: calc(100dvh - var(--gutter) * 2);
+  padding: clamp(32px, 6vw, 96px);
+  background: var(--panel);
+  border-radius: var(--r-shell);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.label {
+  margin: 0 0 24px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: var(--ink-60);
+}
+
+.title {
+  margin: 0;
+  max-width: 14ch;
+  font-size: clamp(2.5rem, 6vw, 4.25rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.body {
+  margin: 32px 0 0;
+  max-width: 46ch;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink-60);
+}
+
+code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+}
+
+.stamp {
+  margin: 64px 0 0;
+  padding-top: 24px;
+  border-top: 1px solid var(--hair);
+  font-size: 12px;
+  color: var(--ink-60);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The entry animation sets these from JS; without JS the page stays readable. */
+html.js .label,
+html.js .title,
+html.js .body,
+html.js .stamp { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .label,
+  html.js .title,
+  html.js .body,
+  html.js .stamp { opacity: 1; }
+}
