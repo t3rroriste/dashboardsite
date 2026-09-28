@@ -1,9 +1,15 @@
 # DESIGN-SYSTEM — accueil
 
 Ce document couvre `index.html` uniquement. Le tableau de bord et le
-sélecteur de serveur ont leur propre système, dans `assets/css/app.css`, et
-les deux ne partagent aucun token : c'est délibéré, et c'est ce qui garantit
-qu'une retouche ici ne déplace rien dans la console.
+sélecteur de serveur ont leur propre système, dans `assets/css/app.css` :
+les deux feuilles restent séparées, et une retouche ici ne déplace toujours
+rien dans la console.
+
+**Ce qui a changé depuis :** la console reprend désormais la *palette*, la
+*matière* et le *détail* de cette D.A. — le même noir chaud, la même encre,
+les mêmes filets, la même coque arrondie. Les deux systèmes ne partagent
+aucun fichier, mais ils partagent des valeurs. Voir
+[§8, la console](#8-la-console--ce-qui-est-repris-et-ce-qui-ne-lest-pas).
 
 Fichier des tokens : `assets/css/home.css`, bloc `:root`.
 
@@ -153,3 +159,60 @@ restaure la position laissait la section vide.
   compteurs posés à leur valeur finale. Vérifié.
 - Sans JavaScript : `page-home.js` sort immédiatement si anime.js manque, et
   aucun état initial n'est posé en CSS — la page reste lisible et navigable.
+
+## 8. La console — ce qui est repris, et ce qui ne l'est pas
+
+`dashboard.html` est un panneau de configuration : neuf sections numérotées,
+des interrupteurs, des combos, des champs bornés, une barre de sauvegarde.
+Il se **scanne**, il ne se lit pas. Transposer l'accueil tel quel — un point
+focal par écran, des titres de 4 rem, un défilement narratif — l'aurait
+rendu impraticable. Ce qui a été repris est donc la matière, pas la mise en
+scène.
+
+### Repris
+
+| De l'accueil | Dans la console |
+|---|---|
+| Noir chaud `#0A0908` / `#121110` / `#1B1918` / `#24211F` | Les mêmes valeurs, dans `app.css :root` |
+| Encre crème `#F4F1EC` et ses paliers | `--fg` `#F4F1EC`, `--fg-2` `#A9A29A` (7,6:1), `--fg-3` `#857E76` (4,9:1) |
+| Le filet à 8 % plutôt qu'un gris opaque | `--hair`, sur les groupes, la latérale, la barre supérieure, les tableaux |
+| La coque détachée, à grand rayon | `.app`, rayon 24 px, gouttière 14 px, sur un noir plus profond (`--void`) |
+| Quatre familles de formes | coque 24 · bloc 12 · contrôle 6 · pilule 999 · disque 50 % |
+| L'index courant (numéro + filet) | `.section__num`, filet posé en `::after` |
+| Le caramel `#C08A5A`, tenu en laisse | **Un seul emploi** : le numéro de la section ouverte dans la navigation |
+| Le grain à 3 % | `body::after`, thème sombre uniquement |
+| Aucune ombre dure | `0 40px 80px -40px` sur les panneaux flottants |
+
+### Volontairement pas repris
+
+- **Les grands titres.** Le titre de section reste à 21 px / 600. Le ratio
+  titre-corps de l'accueil (> 4×) supposerait un seul point focal par écran ;
+  ici il y en a douze.
+- **La faible densité.** Les lignes de réglage gardent leurs 34 px et leur
+  échelle de 6 à 24 px. C'est le point où la console doit diverger, et le
+  brief de ce projet le posait déjà : « la densité est le vrai problème de
+  design ici ».
+- **Le défilement narratif, l'empilement de sections, la parallaxe.** Un
+  écran de réglages ne raconte rien ; il doit répondre.
+- **La police unique.** Archivo pour le texte, IBM Plex Mono pour les
+  chiffres, les identifiants et les clés de réglage (`log.voice`,
+  `#file-attente`). L'accueil s'en tient à une famille ; ici la seconde est
+  fonctionnelle — elle aligne les colonnes de nombres et distingue une
+  valeur technique d'une phrase. C'est un écart assumé au brief.
+
+### Le thème clair
+
+Il n'est pas une inversion : le fond devient un papier chaud (`#E7E3DB`),
+les panneaux le crème (`#F5F2EC`), et le caramel s'assombrit à `#7A5528`
+pour tenir le AA (6,6:1). Les deux thèmes sont mesurés, pas estimés.
+
+### Vérifié dans Chromium
+
+Sur les dix sections, en 1440 px et 390 px, thème sombre et thème clair :
+
+- **Contraste** : aucun texte sous son seuil AA. Mesuré sur le rendu, pas
+  sur les tokens — l'opacité et le fond réel sont pris en compte.
+- **Cibles tactiles** : aucune sous 44 px à 390 px. Cinq l'étaient avant.
+- **Aucune erreur console**, hors le refus des polices Google dans
+  l'environnement de test, qui n'a pas d'accès réseau vers `fonts.gstatic`.
+- **`prefers-reduced-motion`** : contenu immédiatement visible.

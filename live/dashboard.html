@@ -21,7 +21,7 @@
 <body data-guild="">
 
 <a class="skip-link" href="#main" data-i18n="c.skip">Aller au contenu</a>
-<div class="scrim" hidden-aria></div>
+<div class="scrim" aria-hidden="true"></div>
 
 <div class="app">
 
@@ -34,10 +34,10 @@
           <span class="side__name" id="g-name" title="">—</span>
           <span class="mono" style="font-size:10.5px;color:var(--fg-3)"><span id="g-members">—</span> <span data-i18n="c.members">membres</span></span>
         </span>
-        <button class="btn btn--ghost btn--icon" type="button" data-drawer-close
-                style="display:none" data-i18n-attr="aria-label:c.close">✕</button>
+        <button class="btn btn--ghost btn--icon drawer-close" type="button" data-drawer-close
+                data-i18n-attr="aria-label:c.close"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
       </div>
-      <a class="btn btn--ghost btn--block" href="servers.html" style="justify-content:space-between;height:26px;padding:0 6px;font-size:11.5px">
+      <a class="btn btn--ghost btn--block btn--mini side__swap" href="servers.html">
         <span data-i18n="d.changeServer">Changer de serveur</span>
         <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m8 7 4-4 4 4M8 17l4 4 4-4"/></svg>
       </a>
@@ -48,7 +48,7 @@
       <a class="navlink" href="#langue"   data-goto="langue"><span class="num">01</span><span class="navlink-label" data-i18n="s.language"></span></a>
       <a class="navlink" href="#fonctions" data-goto="fonctions"><span class="num">02</span><span class="navlink-label" data-i18n="s.functions"></span></a>
       <a class="navlink" href="#salons"   data-goto="salons"><span class="num">03</span><span class="navlink-label" data-i18n="s.channels"></span></a>
-      <a class="navlink" href="#roles"    data-goto="roles"><span class="num">04</span><span class="navlink-label" data-i18n="s.roles"></span><span class="badge" id="nav-roles-warn" hidden>⚠</span></a>
+      <a class="navlink" href="#roles"    data-goto="roles"><span class="num">04</span><span class="navlink-label" data-i18n="s.roles"></span><span class="badge badge--warn" id="nav-roles-warn" hidden><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20L12 3zM12 9v5M12 17.5v.01"/></svg></span></a>
       <a class="navlink" href="#mmr"      data-goto="mmr"><span class="num">05</span><span class="navlink-label" data-i18n="s.mmr"></span></a>
       <a class="navlink" href="#queue"    data-goto="queue"><span class="num">06</span><span class="navlink-label" data-i18n="s.queue"></span></a>
       <a class="navlink" href="#presets"  data-goto="presets"><span class="num">07</span><span class="navlink-label" data-i18n="s.presets"></span><span class="badge mono" id="nav-presets">0/10</span></a>
@@ -60,11 +60,10 @@
     </nav>
 
     <div class="side__foot">
-      <div style="display:flex;gap:6px;margin-bottom:7px">
+      <div class="side__tools">
         <div class="langmenu langmenu--up" style="flex:1 1 auto">
-          <button class="btn btn--ghost" type="button" data-lang-menu aria-haspopup="menu" aria-expanded="false"
-                  data-i18n-attr="aria-label:c.lang"
-                  style="height:26px;padding:0 7px;font-size:11.5px;width:100%;justify-content:space-between">
+          <button class="btn btn--ghost btn--mini side__lang" type="button" data-lang-menu aria-haspopup="menu" aria-expanded="false"
+                  data-i18n-attr="aria-label:c.lang">
             <span class="mono" style="font-size:11px" data-lang-code>FR</span>
             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
           </button>
@@ -76,12 +75,12 @@
             <button class="langmenu__opt" type="button" role="menuitemradio" data-lang-pick="ko" aria-checked="false" lang="ko">한국어<span class="code">ko</span></button>
           </div>
         </div>
-        <button class="btn" type="button" style="height:26px;width:26px;padding:0" data-theme-toggle aria-label="Thème"></button>
+        <button class="btn btn--icon btn--mini" type="button" data-theme-toggle aria-label="Thème"></button>
       </div>
-      <div style="display:flex;align-items:center;gap:7px;padding-top:6px;border-top:1px solid var(--line)">
-        <span style="width:20px;height:20px;border-radius:999px;background:var(--panel-3);flex-shrink:0"></span>
-        <span style="font:500 11.5px var(--sans);flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" id="me-name">—</span>
-        <a href="index.html" data-i18n-attr="aria-label:c.back" style="display:flex;color:var(--fg-3)">
+      <div class="side__me">
+        <span class="side__avatar"></span>
+        <span class="side__me-name" id="me-name">—</span>
+        <a class="side__out" href="index.html" data-i18n-attr="aria-label:c.back">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
         </a>
       </div>
@@ -127,7 +126,7 @@
         <div class="section__head">
           <div>
             <p><span class="section__num mono">01</span></p>
-            <h1 style="font-size:20px" data-i18n="s.language">Langue</h1>
+            <h1 data-i18n="s.language">Langue</h1>
             <p class="hint section__lead" data-i18n="lg.desc"></p>
           </div>
         </div>
@@ -139,23 +138,23 @@
               <div class="group__body">
                 <div role="radiogroup" aria-labelledby="lg-lbl" style="display:flex;flex-direction:column;gap:8px">
                   <span id="lg-lbl" class="sr-only" data-i18n="s.language"></span>
-                  <label class="row" style="border:1px solid var(--line-2);border-radius:2px;cursor:pointer;gap:10px">
+                  <label class="row row--pick">
                     <input type="radio" name="botlang" value="fr" checked data-setting="language" data-label="Langue" style="accent-color:var(--acc)">
                     <span class="row__label row__label--grow">Français <span class="row__desc mono">fr</span></span>
                   </label>
-                  <label class="row" style="border:1px solid var(--line-2);border-radius:2px;cursor:pointer;gap:10px">
+                  <label class="row row--pick">
                     <input type="radio" name="botlang" value="en" style="accent-color:var(--acc)">
                     <span class="row__label row__label--grow">English <span class="row__desc mono">en</span></span>
                   </label>
-                  <label class="row" style="border:1px solid var(--line-2);border-radius:2px;cursor:pointer;gap:10px">
+                  <label class="row row--pick">
                     <input type="radio" name="botlang" value="es" style="accent-color:var(--acc)">
                     <span class="row__label row__label--grow">Español <span class="row__desc mono">es</span></span>
                   </label>
-                  <label class="row" style="border:1px solid var(--line-2);border-radius:2px;cursor:pointer;gap:10px">
+                  <label class="row row--pick">
                     <input type="radio" name="botlang" value="de" style="accent-color:var(--acc)">
                     <span class="row__label row__label--grow">Deutsch <span class="row__desc mono">de</span></span>
                   </label>
-                  <label class="row" style="border:1px solid var(--line-2);border-radius:2px;cursor:pointer;gap:10px">
+                  <label class="row row--pick">
                     <input type="radio" name="botlang" value="ko" style="accent-color:var(--acc)">
                     <span class="row__label row__label--grow" lang="ko">한국어 <span class="row__desc mono">ko</span></span>
                   </label>
@@ -176,9 +175,9 @@
             <div class="group__body">
               <p class="hint" data-i18n="ch.createdBody"></p>
               <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0">
-                <span class="mono" style="font-size:11.5px;color:var(--fg-2);border:1px solid var(--line);border-radius:2px;padding:2px 6px">#file-attente</span>
+                <span class="chan chan--from mono">#file-attente</span>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--fg-3)" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                <span class="mono" id="lg-preview" style="font-size:11.5px;border:1px solid var(--line-2);border-radius:2px;padding:2px 6px">#queue</span>
+                <span class="chan mono" id="lg-preview">#queue</span>
               </div>
               <p class="hint" data-i18n="lg.renameNote"></p>
             </div>
@@ -191,7 +190,7 @@
         <div class="section__head">
           <div>
             <p><span class="section__num mono">02</span></p>
-            <h1 style="font-size:20px" data-i18n="s.functions">Fonctions</h1>
+            <h1 data-i18n="s.functions">Fonctions</h1>
             <p class="hint section__lead" data-i18n="fn.lead"></p>
           </div>
           <button class="btn btn--ghost" type="button" data-i18n="c.reset"></button>
@@ -244,7 +243,7 @@
         <div class="section__head">
           <div>
             <p><span class="section__num mono">03</span></p>
-            <h1 style="font-size:20px" data-i18n="s.channels">Salons</h1>
+            <h1 data-i18n="s.channels">Salons</h1>
             <p class="hint section__lead" data-i18n="ch.lead"></p>
           </div>
           <button class="btn btn--ghost" type="button" data-i18n="c.reset"></button>
@@ -340,7 +339,7 @@
         <div class="section__head">
           <div>
             <p><span class="section__num mono">04</span></p>
-            <h1 style="font-size:20px" data-i18n="s.roles">Rôles</h1>
+            <h1 data-i18n="s.roles">Rôles</h1>
             <p class="hint section__lead" data-i18n="rl.lead"></p>
           </div>
         </div>
@@ -393,7 +392,7 @@
             <div class="group__head"><span class="group__title" data-i18n="rl.hierarchyTitle"></span></div>
             <div class="group__body">
               <p class="hint" data-i18n="rl.hierarchyBody"></p>
-              <div id="role-hierarchy" style="border:1px solid var(--line);border-radius:2px;margin-top:10px"></div>
+              <div id="role-hierarchy" class="hierarchy"></div>
               <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
                 <a class="btn btn--sm" id="roles-link" href="#" target="_blank" rel="noopener" data-i18n="rl.openRoles"></a>
                 <button class="btn btn--ghost btn--sm" type="button" id="roles-recheck" data-i18n="rl.recheck"></button>
@@ -408,7 +407,7 @@
         <div class="section__head">
           <div>
             <p><span class="section__num mono">05</span></p>
-            <h1 style="font-size:20px" data-i18n="s.mmr">MMR</h1>
+            <h1 data-i18n="s.mmr">MMR</h1>
             <p class="hint section__lead" data-i18n="mm.lead"></p>
           </div>
           <button class="btn btn--ghost" type="button" data-i18n="c.reset"></button>
@@ -536,7 +535,7 @@
         <div class="section__head">
           <div>
             <p><span class="section__num mono">06</span></p>
-            <h1 style="font-size:20px" data-i18n="s.queue">Queue par défaut</h1>
+            <h1 data-i18n="s.queue">Queue par défaut</h1>
             <p class="hint section__lead" data-i18n="q.lead"></p>
           </div>
           <button class="btn" type="button" id="q-save-preset">
@@ -647,7 +646,7 @@
         <div class="section__head">
           <div>
             <p><span class="section__num mono">07</span></p>
-            <h1 style="font-size:20px" data-i18n="s.presets">Presets</h1>
+            <h1 data-i18n="s.presets">Presets</h1>
             <p class="hint section__lead" data-i18n="p.lead"></p>
           </div>
         </div>
@@ -664,7 +663,7 @@
         <div class="section__head">
           <div>
             <p><span class="section__num mono">08</span></p>
-            <h1 style="font-size:20px" data-i18n="s.logs">Logs</h1>
+            <h1 data-i18n="s.logs">Logs</h1>
             <p class="hint section__lead" data-i18n="lo.lead"></p>
           </div>
         </div>
@@ -691,7 +690,7 @@
         <div class="section__head">
           <div>
             <p><span class="section__num mono">09</span></p>
-            <h1 style="font-size:20px" data-i18n="s.security">Sécurité</h1>
+            <h1 data-i18n="s.security">Sécurité</h1>
             <p class="hint section__lead" data-i18n="se.lead"></p>
           </div>
         </div>
@@ -760,7 +759,7 @@
         <div class="section__head">
           <div>
             <p><span class="section__num mono">—</span></p>
-            <h1 style="font-size:20px" data-i18n="d.diagnostic">Diagnostic</h1>
+            <h1 data-i18n="d.diagnostic">Diagnostic</h1>
             <p class="hint section__lead" data-i18n="ch.lead"></p>
           </div>
           <button class="btn" type="button" id="diag-recheck" data-i18n="rl.recheck"></button>
