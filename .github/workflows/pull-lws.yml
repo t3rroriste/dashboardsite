@@ -1,0 +1,108 @@
+name: Mirror LWS site into Git
+
+# Le site cyqbot.eu ne vit que sur le FTP LWS : aucun historique, aucune
+# sauvegarde. Ce workflow le rapatrie dans `live/` et le commite, ce qui donne
+# enfin une copie versionnée — et permet de travailler sur les vrais fichiers
+# depuis une session qui n'a pas accès au FTP.
+#
+# Il ne fait que LIRE le serveur distant. Aucun envoi, aucune suppression côté
+# LWS. Le déploiement reste le fait de `deploy-lws.yml`.
+
+on:
+  workflow_dispatch:
+    inputs:
+      remote_dir:
+        description: "Dossier distant à rapatrier (racine web LWS)"
+        required: false
+        default: "/www/"
+  # Permet de lancer le tout premier rapatriement depuis une branche de travail,
+  # avant que le workflow n'existe sur `main` (workflow_dispatch n'y voit que
+  # les workflows de la branche par défaut).
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/workflows/pull-lws.yml"
+
+concurrency:
+  group: pull-lws-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install lftp
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq lftp
+
+      - name: Download the live site over FTPS
+        env:
+          FTP_SERVER: ${{ secrets.LWS_FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.LWS_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.LWS_FTP_PASSWORD }}
+          REMOTE_DIR: ${{ inputs.remote_dir || '/www/' }}
+        run: |
+          set -euo pipefail
+          if [ -z "${FTP_SERVER}" ] || [ -z "${FTP_USERNAME}" ] || [ -z "${FTP_PASSWORD}" ]; then
+            echo "::error::Les secrets LWS_FTP_* ne sont pas configurés."
+            exit 1
+          fi
+          mkdir -p live
+          # `verify-certificate no` : les certificats des serveurs FTP mutualisés
+          # LWS ne correspondent pas au nom d'hôte. Le transfert reste chiffré.
+          # `preview/` est notre propre build, pas le site à sauvegarder.
+          lftp -c "
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate no;
+            set net:timeout 20;
+            set net:max-retries 3;
+            set cmd:fail-exit true;
+            open -u '${FTP_USERNAME}','${FTP_PASSWORD}' '${FTP_SERVER}';
+            mirror --verbose --delete --parallel=4 \
+              -X .git/ -X node_modules/ -X preview/ \
+              -X awstats/ -X stats/ -X logs/ -X tmp/ \
+              -X '*.sql' -X '*.zip' -X '*.gz' -X '*.tar' -X '*.log' \
+              '${REMOTE_DIR}' live/;
+          "
+
+      - name: Report what came down
+        run: |
+          set -euo pipefail
+          size_kb=$(du -sk live | cut -f1)
+          echo "### Site rapatrié (${size_kb} Ko)" >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          find live -type f | sort | head -300 >> "$GITHUB_STEP_SUMMARY"
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          if [ "${size_kb}" -gt 51200 ]; then
+            echo "::error::Plus de 50 Mo rapatriés : affine les exclusions avant de commiter."
+            exit 1
+          fi
+          # Signale les fichiers qui ressemblent à des porteurs de secrets, sans
+          # jamais afficher leur contenu. Le repo est privé, mais un secret
+          # commité reste dans l'historique.
+          suspects=$(grep -rlEi 'client_secret|api[_-]?key|passw(or)?d|DB_PASS|BOT_TOKEN' live || true)
+          if [ -n "${suspects}" ]; then
+            echo "::warning::Fichiers à vérifier avant publication : ${suspects//$'\n'/, }"
+            { echo "### À vérifier (secrets possibles)"; echo '```'; echo "${suspects}"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Commit the mirror
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A live
+          if git diff --cached --quiet; then
+            echo "Le site en ligne est identique à la copie déjà commitée."
+            exit 0
+          fi
+          git commit -m "Mirror the live cyqbot.eu site into live/"
+          git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
