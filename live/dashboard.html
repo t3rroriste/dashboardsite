@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/css/app.css?v=4">
+<link rel="stylesheet" href="assets/css/app.css?v=5">
 <script>
   try {
     var m = localStorage.getItem('cyq.theme');
@@ -102,10 +102,6 @@
         <span class="sep" aria-hidden="true">/</span>
         <span aria-current="page" data-crumb-current>—</span>
       </nav>
-      <a class="btn btn--ghost btn--sm" id="open-discord" href="#" target="_blank" rel="noopener">
-        <span data-i18n="d.openDiscord">Ouvrir dans Discord</span>
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/></svg>
-      </a>
     </div>
 
     <main id="main">
@@ -139,23 +135,23 @@
                   <span id="lg-lbl" class="sr-only" data-i18n="s.language"></span>
                   <label class="row row--pick">
                     <input type="radio" name="botlang" value="fr" checked data-setting="language" data-label="Langue" style="accent-color:var(--acc)">
-                    <span class="row__label row__label--grow">Français <span class="row__desc mono">fr</span></span>
+                    <span class="pick__flag" data-flag="fr"></span><span class="row__label row__label--grow">Français</span>
                   </label>
                   <label class="row row--pick">
                     <input type="radio" name="botlang" value="en" style="accent-color:var(--acc)">
-                    <span class="row__label row__label--grow">English <span class="row__desc mono">en</span></span>
+                    <span class="pick__flag" data-flag="en"></span><span class="row__label row__label--grow">English</span>
                   </label>
                   <label class="row row--pick">
                     <input type="radio" name="botlang" value="es" style="accent-color:var(--acc)">
-                    <span class="row__label row__label--grow">Español <span class="row__desc mono">es</span></span>
+                    <span class="pick__flag" data-flag="es"></span><span class="row__label row__label--grow">Español</span>
                   </label>
                   <label class="row row--pick">
                     <input type="radio" name="botlang" value="de" style="accent-color:var(--acc)">
-                    <span class="row__label row__label--grow">Deutsch <span class="row__desc mono">de</span></span>
+                    <span class="pick__flag" data-flag="de"></span><span class="row__label row__label--grow">Deutsch</span>
                   </label>
                   <label class="row row--pick">
                     <input type="radio" name="botlang" value="ko" style="accent-color:var(--acc)">
-                    <span class="row__label row__label--grow" lang="ko">한국어 <span class="row__desc mono">ko</span></span>
+                    <span class="pick__flag" data-flag="ko"></span><span class="row__label row__label--grow" lang="ko">한국어</span>
                   </label>
                 </div>
               </div>
@@ -166,19 +162,6 @@
               <span class="savebar__detail"></span>
               <button class="btn btn--ghost btn--sm" type="button" data-cancel data-i18n="c.cancel"></button>
               <button class="btn btn--primary btn--sm" type="button" data-save data-i18n="c.save"></button>
-            </div>
-          </div>
-
-          <div class="group">
-            <div class="group__head"><span class="group__title" data-i18n="lg.preview"></span></div>
-            <div class="group__body">
-              <p class="hint" data-i18n="ch.createdBody"></p>
-              <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0">
-                <span class="chan chan--from mono">#file-attente</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--fg-3)" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-                <span class="chan mono" id="lg-preview">#queue</span>
-              </div>
-              <p class="hint" data-i18n="lg.renameNote"></p>
             </div>
           </div>
         </div>
@@ -772,7 +755,7 @@
 <script src="assets/js/lang/es.js?v=8"></script>
 <script src="assets/js/lang/de.js?v=8"></script>
 <script src="assets/js/lang/ko.js?v=8"></script>
-<script src="assets/js/app.js?v=8"></script>
-<script src="assets/js/page-dashboard.js?v=2"></script>
+<script src="assets/js/app.js?v=9"></script>
+<script src="assets/js/page-dashboard.js?v=3"></script>
 </body>
 </html>

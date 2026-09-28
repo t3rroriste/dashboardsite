@@ -361,8 +361,6 @@
             '" alt="" width="32" height="32" style="width:32px;height:32px">';
         }
         if (g.me && g.me.name) $('#me-name').textContent = g.me.name;
-        var od = $('#open-discord');
-        if (od && g.id) od.setAttribute('href', 'https://discord.com/channels/' + encodeURIComponent(g.id));
         var rl = $('#roles-link');
         if (rl && g.id) rl.setAttribute('href', 'https://discord.com/channels/' + encodeURIComponent(g.id));
 

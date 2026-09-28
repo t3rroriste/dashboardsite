@@ -605,6 +605,17 @@
 
   /* Idempotent : appele a l'init ET a chaque changement de langue, il ne
      doit jamais empiler deux pastilles sur le meme bouton. */
+  /* Un drapeau posé une fois pour toutes, hors du menu de langue : porter
+     `data-flag="fr"` suffit. Le dessin reste celui de DRAPEAUX, donc il n'y a
+     jamais deux versions d'un même drapeau dans le site. */
+  function poserDrapeauxFixes(root) {
+    $$('[data-flag]', root || document).forEach(function (el) {
+      if (el.firstElementChild) return;
+      el.innerHTML = CYQ.drapeau(el.getAttribute('data-flag'));
+    });
+  }
+  CYQ.poserDrapeauxFixes = poserDrapeauxFixes;
+
   function poserDrapeaux(code) {
     $$('[data-lang-pick]').forEach(function (el) {
       var lg = el.getAttribute('data-lang-pick');
@@ -760,6 +771,7 @@
     var saved = store('lang');
     var nav = (navigator.language || '').slice(0, 2).toLowerCase();
     setLang(saved || (LANGS.indexOf(nav) !== -1 ? nav : (CFG.DEFAULT_LANG || 'fr')), true);
+    poserDrapeauxFixes(document);
     setTheme(store('theme') || CFG.DEFAULT_THEME || 'dark');
 
     $$('[data-theme-toggle]').forEach(function (b) {

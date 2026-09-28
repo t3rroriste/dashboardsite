@@ -397,6 +397,10 @@ select.field {
   cursor: pointer; gap: 10px;
 }
 .row--pick:hover { background: var(--panel-2); }
+
+/* Le drapeau de la langue, à la place du code à deux lettres : on reconnaît
+   un pays plus vite qu'on ne lit « es ». Le dessin vient de CYQ.drapeau. */
+.pick__flag { display: flex; flex: 0 0 auto; }
 .row--pick:has(input:checked) { border-color: var(--ctl-line); background: var(--panel-2); }
 
 /* Le nom d'un salon Discord, cité dans le texte : une pilule, comme dans
@@ -1139,7 +1143,10 @@ body.drawer-open .scrim { opacity: 1; pointer-events: auto; }
     flex-direction: column; align-items: stretch; gap: 6px;
     padding: 12px 14px;
   }
-  .row--inline { flex-direction: row; align-items: center; }
+  /* Une ligne qui EST un contrôle (choix de langue) reste horizontale : en
+     colonne, le bouton radio, le drapeau et le nom se retrouvaient sur trois
+     lignes centrées les unes sous les autres. */
+  .row--inline, .row--pick { flex-direction: row; align-items: center; }
   .row__label { width: auto; }
   .bounds { order: 3; }
   .field-num .field { width: 100%; }
