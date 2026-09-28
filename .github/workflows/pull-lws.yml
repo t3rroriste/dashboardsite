@@ -6,7 +6,9 @@ name: Mirror LWS site into Git
 # depuis une session qui n'a pas accès au FTP.
 #
 # Il ne fait que LIRE le serveur distant. Aucun envoi, aucune suppression côté
-# LWS. Le déploiement reste le fait de `deploy-lws.yml`.
+# LWS. Le chemin inverse — renvoyer `live/` sur le site — est `publish-live.yml`,
+# et il demande une confirmation. `deploy-lws.yml`, lui, ne publie que la
+# maquette Vite dans `preview/`.
 
 on:
   workflow_dispatch:
@@ -92,6 +94,7 @@ jobs:
             open -u '${FTP_USERNAME}','${FTP_PASSWORD}' '${FTP_SERVER}';
             mirror --verbose --delete --parallel=4 \
               -X .git/ -X node_modules/ -X www/ -X .quarantaine/ \
+              -X .ftp-deploy-sync-state.json \
               -X awstats/ -X stats/ -X logs/ -X tmp/ \
               -X '*.sql' -X '*.zip' -X '*.gz' -X '*.tar' -X '*.log' \
               '${REMOTE_DIR}' live/;
