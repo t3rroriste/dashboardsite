@@ -37,7 +37,12 @@ jobs:
           # Defaults to a preview subfolder so a misconfigured run can never
           # overwrite the live homepage. Set the LWS_SERVER_DIR repository
           # variable to the web root once the pipeline is proven.
-          server-dir: ${{ vars.LWS_SERVER_DIR || '/www/preview/' }}
+          #
+          # The path is relative to the FTP login directory, which on this
+          # account IS the web root. The earlier '/www/preview/' therefore
+          # created a www/ folder inside the site and published the preview at
+          # cyqbot.eu/www/preview/ — that stray folder can be deleted.
+          server-dir: ${{ vars.LWS_SERVER_DIR || 'preview/' }}
           # Never wipe the remote directory: LWS keeps panel files there.
           dangerous-clean-slate: false
           exclude: |

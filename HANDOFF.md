@@ -1,89 +1,86 @@
-# Reprise de session — état au 28/09/2026
+# Reprise de session — état au 28/09/2026 (mis à jour)
 
 > Ce fichier existe pour qu'une nouvelle session reprenne sans rien redemander
 > à l'utilisateur. Lis-le en entier avant d'agir.
 
 ## Ce qui est fait et fonctionne
 
-**Déploiement automatique.** Tout push sur `main` construit le site
-(`npm run build`) et envoie `dist/` sur l'hébergement LWS en FTPS.
-Workflow : `.github/workflows/deploy-lws.yml`. Les trois secrets
-(`LWS_FTP_SERVER`, `LWS_FTP_USERNAME`, `LWS_FTP_PASSWORD`) sont configurés et
-vérifiés — deux déploiements réussis. Cible actuelle : `/www/preview/`, donc
-`https://cyqbot.eu/preview/`. La racine n'est **pas** touchée.
+**Le site cyqbot.eu est maintenant dans Git.** C'était le correctif de fond :
+il ne vivait que sur le FTP LWS, sans sauvegarde ni historique. Le workflow
+`.github/workflows/pull-lws.yml` le rapatrie en FTPS dans `live/` et le
+commite. Il se lance à la main (onglet *Actions*), ne fait que **lire** le
+serveur, et échoue bruyamment si rien n'est rapatrié.
 
-**Maquette de dashboard** dans ce repo : Vite + anime.js v4, direction
-artistique tirée de captures TikTok fournies par l'utilisateur (noir chaud
-monochrome, coque arrondie détachée, Archivo variable auto-hébergée, wordmark
-géant rogné, cartes portrait 3:4, sections empilées au scroll).
-Contenu **fictif** (marque « Atelier », mobilier). Vérifiée dans Chromium :
-contraste AA sur les 5 surfaces, cibles ≥ 44 px, reduced-motion, zéro erreur
-console.
+À savoir sur les chemins FTP de LWS : **le dossier de connexion FTP EST la
+racine web**. Il n'y a pas de `/www/` au-dessus. C'est ce qui avait fait
+échouer les deux premières tentatives, et ce qui explique que l'ancien
+`server-dir: /www/preview/` publiait en réalité dans `www/preview/` **sous**
+la racine — donc sur `cyqbot.eu/www/preview/`, pas `cyqbot.eu/preview/`.
+Corrigé dans `deploy-lws.yml` ; le dossier `www/` resté sur le serveur peut
+être supprimé.
 
-**Bug Discord résolu.** L'erreur « redirect_uri OAuth2 non valide » venait des
-URL de redirection absentes du portail Discord. Réglé en ajoutant
-`https://www.cyqbot.eu/login.html` et `https://cyqbot.eu/login.html`.
+**Déploiement automatique** de la maquette : tout push sur `main` construit
+le site (`npm run build`) et envoie `dist/` en FTPS dans `preview/`. Les trois
+secrets (`LWS_FTP_SERVER`, `LWS_FTP_USERNAME`, `LWS_FTP_PASSWORD`) sont
+configurés et vérifiés.
 
-## La tâche en cours
+**Maquette de dashboard** à la racine du repo (Vite + anime.js v4, contenu
+fictif « Atelier »). Elle reste une référence de direction artistique, pas le
+produit.
 
-L'utilisateur veut la nouvelle direction artistique appliquée **sur son vrai
-dashboard**, `https://cyqbot.eu/dashboard.html` — et **surtout pas** en
-remplaçant ce fichier par la maquette, qui n'a ni connexion Discord ni données.
-Il ne veut pas non plus qu'on touche à `index.html` (la page d'accueil).
+**La D.A. est appliquée au vrai dashboard.** `live/dashboard.html` et
+`live/assets/css/app.css` reprennent la palette, la matière et le détail de
+l'accueil — noir chaud, encre crème, filets à 8 %, coque arrondie détachée,
+quatre familles de formes, index de sections numéroté, grain à 3 %, caramel
+en un seul emploi. La densité, elle, est conservée : un écran de réglages se
+scanne. Le détail de ce qui est repris et de ce qui ne l'est pas est dans
+`live/DESIGN-SYSTEM.md`, §8.
 
-### Ce qu'est ce vrai dashboard
+Quatre défauts corrigés au passage : `hidden-aria` (qui ne faisait rien) →
+`aria-hidden`, les glyphes texte `✕` et `⚠` → SVG, la règle de focus qui
+posait un `border-radius` sur l'élément focalisé, et le bouton de fermeture
+du tiroir mobile, câblé en JS mais masqué par un `display:none` en dur.
+Vérifié dans Chromium sur les dix sections, en 1440 et 390 px, deux thèmes :
+contraste AA partout, aucune cible sous 44 px (il y en avait cinq), aucune
+erreur console.
 
-Panneau de configuration d'un bot Discord. Dense, utilitaire, très loin d'une
-page vitrine : 9 sections numérotées (Langue, Fonctions, Salons, Rôles, MMR,
-Queue, Presets, Logs, Sécurité) plus un Diagnostic, avec interrupteurs, combos,
-champs numériques bornés, barre de sauvegarde collante, i18n en 5 langues
-(fr/en/es/de/ko), thème clair/sombre via `data-theme` + `localStorage`.
+**Bug Discord résolu** (pour mémoire) : l'erreur « redirect_uri OAuth2 non
+valide » venait des URL de redirection absentes du portail Discord. Réglé en
+ajoutant `https://www.cyqbot.eu/login.html` et `https://cyqbot.eu/login.html`.
 
-Il charge **déjà Archivo** et IBM Plex Mono depuis Google Fonts, numérote déjà
-ses sections, et utilise des tokens sémantiques (`--fg-2`, `--fg-3`, `--line`,
-`--line-2`, `--panel-3`, `--acc`, `--warn`, `--sans`, `--mono`).
+## Ce qui reste à faire
 
-**Ne transpose pas la maquette éditoriale telle quelle** : un écran de réglages
-doit rester dense et scannable. Reprends la palette, la typo et le détail
-(filets, numéros, petites capitales suivies), pas le scroll narratif ni les
-grands titres.
+**Publier.** Les changements sont dans Git, **pas encore en ligne**. Le
+workflow `.github/workflows/publish-live.yml` renvoie `live/` sur le site :
+onglet *Actions* → *Publish live/ to cyqbot.eu* → *Run workflow* → taper
+`publier`. Il ne se déclenche jamais tout seul. Demande d'abord à
+l'utilisateur : c'est son site en production.
 
-### À récupérer en premier (le réseau doit être ouvert sur cyqbot.eu)
+**Les polices.** `dashboard.html` charge Archivo et IBM Plex Mono depuis
+Google Fonts. Les héberger dans `assets/fonts/` supprimerait une dépendance
+externe et le petit saut de rendu au chargement. Les `.woff2` d'Archivo sont
+déjà dans le repo (`src/fonts/`).
 
-```
-https://cyqbot.eu/dashboard.html
-https://cyqbot.eu/assets/css/app.css
-https://cyqbot.eu/assets/js/app.js
-https://cyqbot.eu/assets/js/config.js
-https://cyqbot.eu/assets/js/page-dashboard.js
-https://cyqbot.eu/index.html
-https://cyqbot.eu/login.html
-https://cyqbot.eu/servers.html
-```
-
-Sans `app.css`, aucun jugement sur le design n'est possible : le HTML ne dit
-presque rien du rendu.
-
-## Défauts déjà repérés dans `dashboard.html`
-
-1. `<div class="scrim" hidden-aria>` — `hidden-aria` n'est pas un attribut
-   valide et ne fait rien. Probablement `hidden` ou `aria-hidden="true"`.
-   Ce scrim doit masquer le fond quand le tiroir latéral s'ouvre.
-2. Icônes incohérentes : du SVG partout, sauf `✕` (fermer) et `⚠` (alerte
-   rôles) qui sont des caractères texte, au rendu dépendant de l'OS.
-3. Beaucoup de `style="..."` en dur (tailles de titres, largeurs, couleurs),
-   ce qui rend toute refonte pénible.
+**Le reste du site.** `servers.html`, `guide.html`, `modules.html` et
+`welcome.html` utilisent le même `app.css` et ont donc hérité de la palette,
+mais leur mise en page n'a pas été revue écran par écran.
 
 ## Contexte important
 
-- Le site `cyqbot.eu` n'est **dans aucun repo** : il vit uniquement sur le FTP
-  LWS, sans sauvegarde ni historique. Le mettre sous Git est le vrai correctif
-  de fond. L'utilisateur a sauvegardé `index.html` sur son Bureau.
 - L'hébergement est **mutualisé** : Apache/PHP, pas de runtime Python. Le site
   FastAPI du repo `t3rroriste/createyourqueue` (dossier `site/`) **ne peut pas**
-  y tourner. Le dashboard en ligne est du statique, non versionné.
-- Dépôts : `t3rroriste/dashboardsite` (ce repo, la maquette + le pipeline) et
-  `t3rroriste/createyourqueue` (le bot Python + un site FastAPI inutilisé).
+  y tourner. Le dashboard en ligne est du statique.
+- Le dashboard fonctionne **sans API** (`API_BASE: ''` dans
+  `live/assets/js/config.js`) : il se navigue et affiche ses états vides. C'est
+  ce qui permet de le vérifier en local sans back-end.
+- Dépôts : `t3rroriste/dashboardsite` (ce repo) et
+  `t3rroriste/createyourqueue` (le bot Python).
+- **Le réseau de la session peut bloquer `cyqbot.eu`** : le proxy de sortie ne
+  laisse passer que GitHub. D'où le détour par GitHub Actions pour lire et
+  écrire sur le FTP. Ne perds pas de temps à retenter un `curl` sur le site.
+- Pour vérifier le rendu : `python3 -m http.server 8123` depuis `live/`, et
+  Chromium est pré-installé (`/opt/pw-browsers/chromium`) — passe-le en
+  `executablePath` à Playwright, la version du paquet npm ne correspond pas.
 - L'utilisateur écrit en français et préfère des instructions courtes et très
-  concrètes. Il s'est perdu plusieurs fois sur FileZilla : évite de lui demander
-  des manipulations de fichiers, récupère les choses toi-même.
+  concrètes. Il s'est perdu plusieurs fois sur FileZilla : évite de lui
+  demander des manipulations de fichiers, récupère les choses toi-même.
