@@ -22,6 +22,16 @@ on:
         description: "Dossier distant, relatif au dossier de connexion FTP (= racine web)"
         required: false
         default: "./"
+  # « Run workflow » n'apparaît que pour les workflows présents sur la branche
+  # par défaut. Tant que celui-ci vit sur une branche de travail, le seul
+  # moyen de le lancer est un marqueur : on crée `.github/publish-now`, on
+  # pousse, ça publie. Le job se saute de lui-même si le fichier n'est pas là,
+  # pour que le commit qui le SUPPRIME ne republie pas.
+  push:
+    branches:
+      - "claude/**"
+    paths:
+      - ".github/publish-now"
 
 concurrency:
   group: lws-ftp
@@ -31,16 +41,25 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
       - name: Check the confirmation
+        id: gate
         run: |
-          if [ "${{ inputs.confirm }}" != "publier" ]; then
+          if [ "${{ github.event_name }}" = "push" ]; then
+            if [ -f .github/publish-now ]; then
+              echo "Marqueur présent : publication."
+            else
+              echo "Marqueur retiré : rien à publier."
+              echo "skip=true" >> "$GITHUB_OUTPUT"
+            fi
+          elif [ "${{ inputs.confirm }}" != "publier" ]; then
             echo "::error::Confirmation absente : relance en tapant exactement 'publier'."
             exit 1
           fi
 
-      - uses: actions/checkout@v4
-
       - name: Upload live/ over FTPS
+        if: steps.gate.outputs.skip != 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.LWS_FTP_SERVER }}
@@ -48,7 +67,7 @@ jobs:
           password: ${{ secrets.LWS_FTP_PASSWORD }}
           protocol: ftps
           local-dir: ./live/
-          server-dir: ${{ inputs.server_dir }}
+          server-dir: ${{ inputs.server_dir || './' }}
           # Ne vide JAMAIS le dossier distant : le panneau LWS y garde ses
           # propres fichiers, et `live/` ne contient pas tout le serveur.
           dangerous-clean-slate: false
