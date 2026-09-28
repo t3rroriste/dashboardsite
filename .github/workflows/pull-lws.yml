@@ -12,9 +12,9 @@ on:
   workflow_dispatch:
     inputs:
       remote_dir:
-        description: "Dossier distant à rapatrier (racine web LWS)"
+        description: "Dossier distant à rapatrier, relatif au dossier de connexion FTP"
         required: false
-        default: "/www/"
+        default: "www/"
   # Permet de lancer le tout premier rapatriement depuis une branche de travail,
   # avant que le workflow n'existe sur `main` (workflow_dispatch n'y voit que
   # les workflows de la branche par défaut).
@@ -42,21 +42,44 @@ jobs:
           sudo apt-get update -qq
           sudo apt-get install -y -qq lftp
 
-      - name: Download the live site over FTPS
+      # Les chemins FTP de LWS ne sont pas ceux qu'on croit : un `/www/` absolu
+      # peut exister et être vide, alors que le vrai dossier web est `www/`
+      # relatif au dossier de connexion. On regarde avant de rapatrier.
+      - name: Inspect the remote tree
         env:
           FTP_SERVER: ${{ secrets.LWS_FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.LWS_FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.LWS_FTP_PASSWORD }}
-          REMOTE_DIR: ${{ inputs.remote_dir || '/www/' }}
         run: |
           set -euo pipefail
           if [ -z "${FTP_SERVER}" ] || [ -z "${FTP_USERNAME}" ] || [ -z "${FTP_PASSWORD}" ]; then
             echo "::error::Les secrets LWS_FTP_* ne sont pas configurés."
             exit 1
           fi
-          mkdir -p live
           # `verify-certificate no` : les certificats des serveurs FTP mutualisés
           # LWS ne correspondent pas au nom d'hôte. Le transfert reste chiffré.
+          lftp -c "
+            set ftp:ssl-force true;
+            set ftp:ssl-protect-data true;
+            set ssl:verify-certificate no;
+            set net:timeout 20;
+            open -u '${FTP_USERNAME}','${FTP_PASSWORD}' '${FTP_SERVER}';
+            echo '--- dossier de connexion ---'; pwd; ls;
+            echo '--- www/ (relatif) ---';       ls www 2>&1 || true;
+            echo '--- /www/ (absolu) ---';       ls /www 2>&1 || true;
+          " | tee remote-tree.txt
+          { echo "### Arborescence distante"; echo '```'; cat remote-tree.txt; echo '```'; } \
+            >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Download the live site over FTPS
+        env:
+          FTP_SERVER: ${{ secrets.LWS_FTP_SERVER }}
+          FTP_USERNAME: ${{ secrets.LWS_FTP_USERNAME }}
+          FTP_PASSWORD: ${{ secrets.LWS_FTP_PASSWORD }}
+          REMOTE_DIR: ${{ inputs.remote_dir || 'www/' }}
+        run: |
+          set -euo pipefail
+          mkdir -p live
           # `preview/` est notre propre build, pas le site à sauvegarder.
           lftp -c "
             set ftp:ssl-force true;
@@ -72,6 +95,12 @@ jobs:
               -X '*.sql' -X '*.zip' -X '*.gz' -X '*.tar' -X '*.log' \
               '${REMOTE_DIR}' live/;
           "
+          # Un mirror muet sur un dossier vide se termine sans erreur : sans ce
+          # garde-fou, « rien rapatrié » passerait pour un succès.
+          if [ -z "$(find live -type f -print -quit)" ]; then
+            echo "::error::Aucun fichier rapatrié depuis '${REMOTE_DIR}'. Regarde l'arborescence distante ci-dessus et relance le workflow avec le bon dossier."
+            exit 1
+          fi
 
       - name: Report what came down
         run: |
