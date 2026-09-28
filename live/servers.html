@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/css/app.css?v=3">
+<link rel="stylesheet" href="assets/css/app.css?v=4">
 <script>
   try {
     var m = localStorage.getItem('cyq.theme');
@@ -63,10 +63,9 @@
       </p>
     </div>
     <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <div style="display:flex;align-items:center;gap:8px;height:var(--ctl-h);width:232px;padding:0 10px;background:var(--bg);border:1px solid var(--line-2);border-radius:2px">
+      <div class="search">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--fg-3)" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-        <input id="sv-filter" type="search" style="flex:1 1 auto;min-width:0;height:100%;background:none;border:none;outline:none;color:var(--fg);font:400 12.5px var(--sans)"
-               data-i18n-attr="placeholder:sv.filter, aria-label:sv.filter">
+        <input id="sv-filter" type="search" data-i18n-attr="placeholder:sv.filter, aria-label:sv.filter">
       </div>
       <label class="btn" style="cursor:pointer;gap:8px">
         <input id="sv-hide" type="checkbox" style="width:16px;height:16px;accent-color:var(--acc);flex-shrink:0">
@@ -108,6 +107,6 @@
 <script src="assets/js/lang/de.js?v=8"></script>
 <script src="assets/js/lang/ko.js?v=8"></script>
 <script src="assets/js/app.js?v=8"></script>
-<script src="assets/js/page-servers.js"></script>
+<script src="assets/js/page-servers.js?v=2"></script>
 </body>
 </html>

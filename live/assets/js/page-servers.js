@@ -150,5 +150,12 @@
   document.getElementById('sv-refresh').addEventListener('click', load);
   document.addEventListener('cyq:lang', render);
 
-  load();
+  /* Ce script s'exécute à l'analyse de la page, donc AVANT le démarrage de
+     app.js, qui pose la langue sur `DOMContentLoaded`. Lancé tout de suite,
+     le premier rendu se faisait donc en français quelle que soit la langue du
+     visiteur — et comme les états vides contiennent du texte littéral et non
+     des `data-i18n`, rien ne venait les retraduire ensuite. app.js ayant
+     enregistré son démarrage en premier, il passera avant celui-ci. */
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', load);
+  else load();
 })();

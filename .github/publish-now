@@ -1,0 +1,2 @@
+Déclencheur de `publish-live.yml` : sa présence dans un push sur une branche
+`claude/**` envoie `live/` sur cyqbot.eu. Le supprimer ne publie rien.
