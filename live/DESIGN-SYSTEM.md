@@ -178,8 +178,6 @@ scène.
 | Le filet à 8 % plutôt qu'un gris opaque | `--hair`, sur les groupes, la latérale, la barre supérieure, les tableaux |
 | La coque détachée, à grand rayon | `.app`, rayon 24 px, gouttière 14 px, sur un noir plus profond (`--void`) |
 | Quatre familles de formes | coque 24 · bloc 12 · contrôle 6 · pilule 999 · disque 50 % |
-| L'index courant (numéro + filet) | `.section__num`, filet posé en `::after` |
-| Le caramel `#C08A5A`, tenu en laisse | **Un seul emploi** : le numéro de la section ouverte dans la navigation |
 | Le grain à 3 % | `body::after`, thème sombre uniquement |
 | Aucune ombre dure | `0 40px 80px -40px` sur les panneaux flottants |
 
@@ -194,6 +192,12 @@ scène.
   design ici ».
 - **Le défilement narratif, l'empilement de sections, la parallaxe.** Un
   écran de réglages ne raconte rien ; il doit répondre.
+- **L'index numéroté.** Les sections de l'accueil sont numérotées ; celles
+  de la console ne le sont plus. La latérale les donne déjà dans l'ordre et
+  chaque écran porte son titre : le chiffre ne disait rien que la page ne
+  disait déjà. Le caramel, qui n'avait que cet emploi, a disparu avec lui —
+  la console est strictement monochrome, hors couleurs d'état et couleurs
+  d'équipe, qui sont des données.
 - **La police unique.** Archivo pour le texte, IBM Plex Mono pour les
   chiffres, les identifiants et les clés de réglage (`log.voice`,
   `#file-attente`). L'accueil s'en tient à une famille ; ici la seconde est
