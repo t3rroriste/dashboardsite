@@ -19,16 +19,23 @@ Ne colle jamais ces valeurs dans une conversation ou dans un fichier du repo.
 | `LWS_FTP_USERNAME` | L'identifiant du compte FTP dans ce même écran. |
 | `LWS_FTP_PASSWORD` | Le mot de passe de ce compte FTP. Si tu ne l'as plus, réinitialise-le depuis le panneau — c'est plus sûr que de le chercher. |
 
-### Variable optionnelle — le dossier cible
+### Le dossier cible — important
 
-Même écran, onglet **Variables** → `LWS_SERVER_DIR`.
-Valeur par défaut si tu ne la crées pas : `/www/`.
+Par défaut, le workflow déploie dans **`/www/preview/`**, un sous-dossier.
+Le site est alors visible sur `https://tondomaine.fr/preview/`.
 
-Vérifie le bon dossier en te connectant une fois en FTP (FileZilla) : la racine
-web de LWS est le dossier qui contient déjà un `index.html` ou `index.php` de
-bienvenue. Selon l'offre c'est `/www/`, `/htdocs/` ou `/public_html/`.
-**Si le dossier est faux, le site ne s'affichera pas** alors que le workflow
-sera vert : les fichiers auront été déposés au mauvais endroit.
+C'est volontaire : **un site est déjà en ligne sur ce domaine**, et cette valeur
+par défaut garantit qu'un déploiement raté ou mal configuré ne peut pas écraser
+la page d'accueil.
+
+Pour publier à la racine une fois la chaîne validée et le dashboard prêt :
+GitHub → *Settings* → *Secrets and variables* → *Actions* → onglet
+**Variables** → *New repository variable* → `LWS_SERVER_DIR` = la racine web.
+
+Cette racine est le dossier qui contient l'`index.html` du site actuel. Selon
+l'offre LWS : `/www/`, `/htdocs/` ou `/public_html/`. Vérifie-le en FTP
+(FileZilla) avant de basculer — **si le dossier est faux, le workflow sera vert
+mais rien ne changera en ligne**, les fichiers auront été déposés ailleurs.
 
 ---
 
@@ -73,5 +80,7 @@ travailler sans publier.
 
 `index.html` est une **page placeholder** qui affiche la date du build. Elle sert
 uniquement à vérifier la chaîne de bout en bout : modifie son texte, pousse sur
-`main`, et regarde le changement apparaître sur ton domaine. Elle sera remplacée
-par le dashboard.
+`main`, et regarde le changement apparaître sur `tondomaine.fr/preview/`.
+
+Le site de production actuel n'est pas touché tant que `LWS_SERVER_DIR` n'a pas
+été créée. La page placeholder sera remplacée par le dashboard.

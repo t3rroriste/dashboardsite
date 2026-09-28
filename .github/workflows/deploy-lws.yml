@@ -34,8 +34,11 @@ jobs:
           password: ${{ secrets.LWS_FTP_PASSWORD }}
           protocol: ftps
           local-dir: ./dist/
-          server-dir: ${{ vars.LWS_SERVER_DIR || '/www/' }}
-          # Never wipe the remote root: LWS keeps panel files there.
+          # Defaults to a preview subfolder so a misconfigured run can never
+          # overwrite the live homepage. Set the LWS_SERVER_DIR repository
+          # variable to the web root once the pipeline is proven.
+          server-dir: ${{ vars.LWS_SERVER_DIR || '/www/preview/' }}
+          # Never wipe the remote directory: LWS keeps panel files there.
           dangerous-clean-slate: false
           exclude: |
             **/.git*
