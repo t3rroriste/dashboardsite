@@ -54,8 +54,6 @@
     for (var i = 0; i < 6; i++) {
       var c = TEAM_COLORS[i];
       html += '<div class="row" data-team="' + i + '"' + (i >= 2 ? ' hidden' : '') + '>' +
-        '<span class="mono" style="width:22px;flex-shrink:0;font-size:11px;color:var(--fg-3)">' +
-          ('0' + (i + 1)) + '</span>' +
         '<input class="field field--sans" type="text" maxlength="32" value="Équipe ' + (i + 1) + '" ' +
           'data-setting="queue.team' + i + '.name" data-label="Équipe ' + (i + 1) + '" ' +
           'style="width:210px" aria-label="' + esc(t('q.teamName', { n: i + 1 })) + '">' +
@@ -323,7 +321,6 @@
         var above = botPos != null && r.position > botPos && !isBot;
         return '<div style="display:flex;align-items:center;gap:8px;height:26px;padding:0 9px;' +
           'border-bottom:1px solid var(--line)' + (above ? ';background:var(--warn-bg)' : '') + '">' +
-          '<span class="mono" style="font-size:9.5px;color:var(--fg-3);width:14px">' + (i + 1) + '</span>' +
           '<span class="mono" style="font-size:11px;flex:1 1 auto' + (above ? ';color:var(--warn)' : '') + '">@' +
           esc(r.name) + '</span>' +
           (above ? '<span style="color:var(--warn)">' + icon('warn', 11) + '</span>' : '') +

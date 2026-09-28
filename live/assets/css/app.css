@@ -43,12 +43,6 @@
   --acc-ink:   #0A0908;
   --acc-soft:  rgba(244,241,236,.26);
 
-  /* --- le caramel de l'accueil, échantillonné dans sa photographie.
-     UN SEUL emploi dans toute la console : le numéro de la section ouverte
-     dans la navigation latérale — l'équivalent du point de pagination actif
-     de la référence. Jamais un fond, jamais un dégradé.                   */
-  --accent:    #C08A5A;   /* 6.3:1 sur --panel */
-
   /* --- états : la seule autre couleur de l'interface, et jamais en
      décoration. Chroma basse pour cohabiter avec le noir chaud ; chacune
      reste doublée d'un glyphe et d'un mot.                                */
@@ -118,9 +112,6 @@ html[data-theme="light"] {
   --acc-ink:   #F5F2EC;
   --acc-soft:  rgba(22,19,15,.24);
   --void:      #DCD7CD;
-
-  /* Le caramel de l'accueil s'assombrit pour tenir le AA sur le papier. */
-  --accent:    #7A5528;   /* 6.6:1 sur --panel */
 
   --ok:        #2E6B47;  --ok-bg:   #E8EFE8;  --ok-line:   #B3CCBB;
   --warn:      #7A5B1E;  --warn-bg: #F2ECDE;  --warn-line: #D6C49A;
@@ -931,9 +922,6 @@ body[data-guild]::before {
 .navlink[aria-current="page"] {
   background: var(--film); color: var(--fg); font-weight: 600;
 }
-.navlink .num { font: 400 10px var(--mono); color: var(--fg-3); width: 15px; flex-shrink: 0; }
-/* L'unique emploi du caramel dans toute la console. */
-.navlink[aria-current="page"] .num { color: var(--accent); }
 .navlink .badge { margin-left: auto; font: 400 10px var(--mono); color: var(--fg-3); }
 /* L'alerte des rôles : un pictogramme dessiné, pas le caractère « ⚠ », dont
    le rendu dépendait de la police d'emoji du système. */
@@ -988,21 +976,9 @@ body[data-guild]::before {
   gap: 24px; margin-bottom: 18px;
 }
 
-/* Le repère de section : un numéro, puis un filet, comme l'index courant de
-   l'accueil. Le filet est posé en ::after — aucune balise à ajouter dans
-   les dix sections du document.                                          */
-.section__num {
-  display: flex; align-items: center; gap: 12px;
-  font: 400 11px var(--mono); color: var(--fg-3); letter-spacing: .11em;
-}
-.section__num::after {
-  content: ""; width: 44px; height: 1px; flex: none;
-  background: currentColor; opacity: .45;
-}
 /* Le titre de section : la hiérarchie vient de la graisse et du suivi, pas
    d'une taille de vitrine. Une console se scanne. */
 .section__head h1 {
-  margin-top: 7px;
   font: 600 21px/1.2 var(--sans); letter-spacing: -.025em;
   /* Le routeur donne le focus à ce titre à chaque changement de section.
      Sans cette largeur, l'anneau de focus barrait toute la colonne et se
