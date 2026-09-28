@@ -1,38 +1,29 @@
 name: Publish live/ to cyqbot.eu
 
-# Renvoie le contenu de `live/` sur l'hébergement LWS, c'est-à-dire sur le
-# site en production. C'est l'inverse de `pull-lws.yml`.
+# Le site en ligne, c'est le contenu de `live/` sur la branche `main`.
 #
-# CE WORKFLOW PUBLIE. Il ne se déclenche jamais tout seul : ni au push, ni à
-# la fusion. Il faut l'ouvrir dans l'onglet Actions, cliquer « Run workflow »
-# et taper `publier` dans la case de confirmation.
+# Tout push sur `main` qui touche `live/` est publié sur cyqbot.eu dans la
+# minute. Autrement dit : `main` EST la production. Pour préparer quelque
+# chose sans le publier, travaille sur une autre branche et fusionne quand
+# c'est prêt.
 #
-# Le filet de sécurité est `pull-lws.yml` : le site est versionné dans
-# `live/`, donc une publication ratée se répare en revenant au commit
-# précédent et en republiant.
+# Le filet de sécurité est `pull-lws.yml` : le site est versionné, donc une
+# publication ratée se répare en revenant au commit d'avant et en poussant.
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "live/**"
   workflow_dispatch:
     inputs:
-      confirm:
-        description: "Tape publier pour confirmer l'envoi sur le site en ligne"
-        required: true
-        default: ""
       server_dir:
         description: "Dossier distant, relatif au dossier de connexion FTP (= racine web)"
         required: false
         default: "./"
-  # « Run workflow » n'apparaît que pour les workflows présents sur la branche
-  # par défaut. Tant que celui-ci vit sur une branche de travail, le seul
-  # moyen de le lancer est un marqueur : on crée `.github/publish-now`, on
-  # pousse, ça publie. Le job se saute de lui-même si le fichier n'est pas là,
-  # pour que le commit qui le SUPPRIME ne republie pas.
-  push:
-    branches:
-      - "claude/**"
-    paths:
-      - ".github/publish-now"
 
+# Un seul travail à la fois sur le compte FTP : deux transferts simultanés sur
+# le même hébergement mutualisé se marchent dessus.
 concurrency:
   group: lws-ftp
   cancel-in-progress: false
@@ -43,23 +34,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check the confirmation
-        id: gate
-        run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            if [ -f .github/publish-now ]; then
-              echo "Marqueur présent : publication."
-            else
-              echo "Marqueur retiré : rien à publier."
-              echo "skip=true" >> "$GITHUB_OUTPUT"
-            fi
-          elif [ "${{ inputs.confirm }}" != "publier" ]; then
-            echo "::error::Confirmation absente : relance en tapant exactement 'publier'."
-            exit 1
-          fi
-
       - name: Upload live/ over FTPS
-        if: steps.gate.outputs.skip != 'true'
         uses: SamKirkland/FTP-Deploy-Action@v4.3.5
         with:
           server: ${{ secrets.LWS_FTP_SERVER }}

@@ -1,12 +1,15 @@
 name: Deploy to LWS
 
+# Manuel, et seulement manuel. Depuis que `publish-live.yml` publie le vrai
+# site à chaque push sur `main`, laisser celui-ci partir sur le même push
+# lancerait deux transferts FTP concurrents sur le même compte mutualisé —
+# et la maquette n'est pas le produit.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
+# Même groupe que la publication du site : un seul transfert FTP à la fois.
 concurrency:
-  group: deploy-lws
+  group: lws-ftp
   cancel-in-progress: false
 
 jobs:

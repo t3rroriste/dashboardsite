@@ -50,11 +50,11 @@ ajoutant `https://www.cyqbot.eu/login.html` et `https://cyqbot.eu/login.html`.
 
 ## Ce qui reste à faire
 
-**Publier.** Les changements sont dans Git, **pas encore en ligne**. Le
-workflow `.github/workflows/publish-live.yml` renvoie `live/` sur le site :
-onglet *Actions* → *Publish live/ to cyqbot.eu* → *Run workflow* → taper
-`publier`. Il ne se déclenche jamais tout seul. Demande d'abord à
-l'utilisateur : c'est son site en production.
+**Fusionner la branche de travail dans `main`.** C'est ce qui arme la
+publication automatique : `publish-live.yml` publie à chaque push sur `main`
+qui touche `live/`. Tant que le workflow n'est pas sur la branche par défaut,
+GitHub ne l'y déclenche pas, et le bouton « Run workflow » n'apparaît pas non
+plus. Voir `README.md` pour la chaîne complète.
 
 **Les polices.** `dashboard.html` charge Archivo et IBM Plex Mono depuis
 Google Fonts. Les héberger dans `assets/fonts/` supprimerait une dépendance
