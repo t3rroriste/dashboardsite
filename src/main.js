@@ -14,7 +14,7 @@ const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 root.classList.add('js');
 
 const ALL_HIDDEN =
-  '.line__in, .reveal, .hero__media, .hero__card, .hero__wordmark, ' +
+  '.line__in, .reveal, .hero__figure, .rail, .hero__card, .hero__wordmark, ' +
   '.kpi, .card, .table tbody tr, .chart__axis, .foot';
 
 const EASE = 'outExpo';
@@ -85,7 +85,8 @@ function drawLines(selector, duration, delayStart) {
    ---------------------------------------------------------------------- */
 function staticRender() {
   utils.set(ALL_HIDDEN, { opacity: 1, translateY: 0, scale: 1 });
-  utils.set('.hero__wordmark', { opacity: 0.08 });
+  utils.set('.hero__wordmark', { opacity: 0.09 });
+  utils.set('.hero__figure', { opacity: 0.11 });
   fillCountersInstantly();
 }
 
@@ -95,7 +96,8 @@ function staticRender() {
 function playEntry() {
   utils.set('.line__in', { translateY: '110%', opacity: 1 });
   utils.set('.hero__inner .reveal', { opacity: 0, translateY: 16 });
-  utils.set('.hero__media', { opacity: 0, scale: 1.12, translateY: 40 });
+  utils.set('.hero__figure', { opacity: 0, scale: 1.14 });
+  utils.set('.rail', { opacity: 0, translateY: 18 });
   utils.set('.hero__card', { opacity: 0, scale: 0.92 });
   utils.set('.hero__wordmark', { opacity: 0, translateY: '55%' });
 
@@ -105,8 +107,9 @@ function playEntry() {
     .add('.nav', { translateY: [-24, 0], opacity: [0, 1], duration: 700 }, 120)
     .add('.hero__inner .reveal', { opacity: 1, translateY: 0, duration: 700 }, 180)
     .add('.line__in', { translateY: '0%', duration: 1000, delay: stagger(80) }, 200)
-    .add('.hero__media', { opacity: 1, scale: 1, translateY: 0, duration: 1300 }, 350)
-    .add('.hero__wordmark', { opacity: 0.08, translateY: '0%', duration: 1200 }, 550)
+    .add('.hero__figure', { opacity: 0.11, scale: 1, duration: 1400 }, 300)
+    .add('.rail', { opacity: 1, translateY: 0, duration: 700 }, 620)
+    .add('.hero__wordmark', { opacity: 0.09, translateY: '0%', duration: 1200 }, 550)
     .add('.hero__card', { opacity: 1, scale: 1, duration: 700 }, 700);
 
   return tl;
@@ -204,8 +207,8 @@ function bindScroll() {
 
   /* Parallax: the object drifts, the wordmark rises faster than the section.
      Subtle by design — noticing it consciously means it is too strong. */
-  animate('.hero__media', {
-    translateY: ['-4%', '6%'],
+  animate('.hero__figure', {
+    rotate: [0, 26],
     ease: 'linear',
     autoplay: onScroll({ target: '.hero', enter: 'top top', leave: 'bottom top', sync: true }),
   });
