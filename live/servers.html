@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Choisir un serveur — CreateYourQueue</title>
+<meta name="description" content="Les serveurs Discord où tu peux configurer CreateYourQueue.">
+<meta name="color-scheme" content="dark light">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/css/app.css?v=2">
+<script>
+  try {
+    var m = localStorage.getItem('cyq.theme');
+    document.documentElement.setAttribute('data-theme', m === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+</head>
+<body>
+
+<a class="skip-link" href="#main" data-i18n="c.skip">Aller au contenu</a>
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="index.html">
+      <img src="assets/img/logo.png" alt="" width="26" height="26">
+      <span>CreateYourQueue</span>
+    </a>
+    <div class="topbar__actions">
+      <div class="langmenu">
+        <button class="btn btn--ghost" type="button" data-lang-menu aria-haspopup="menu" aria-expanded="false"
+                data-i18n-attr="aria-label:c.lang">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg>
+          <span class="mono" data-lang-code>FR</span>
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="langmenu__panel" role="menu" data-i18n-attr="aria-label:c.lang">
+          <button class="langmenu__opt" type="button" role="menuitemradio" data-lang-pick="fr" aria-checked="true">Français<span class="code">fr</span></button>
+          <button class="langmenu__opt" type="button" role="menuitemradio" data-lang-pick="en" aria-checked="false">English<span class="code">en</span></button>
+          <button class="langmenu__opt" type="button" role="menuitemradio" data-lang-pick="es" aria-checked="false">Español<span class="code">es</span></button>
+          <button class="langmenu__opt" type="button" role="menuitemradio" data-lang-pick="de" aria-checked="false">Deutsch<span class="code">de</span></button>
+          <button class="langmenu__opt" type="button" role="menuitemradio" data-lang-pick="ko" aria-checked="false" lang="ko">한국어<span class="code">ko</span></button>
+        </div>
+      </div>
+      <button class="btn btn--icon" type="button" data-theme-toggle aria-label="Basculer le thème"></button>
+      <a class="btn btn--ghost" href="modules.html" data-i18n="m.nav">Modules</a>
+      <a class="btn" href="index.html" data-i18n="c.back">Retour</a>
+    </div>
+  </div>
+</header>
+
+<main id="main" class="wrap" style="padding-top:34px;padding-bottom:48px">
+
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:20px;flex-wrap:wrap">
+    <div>
+      <h1 data-i18n="sv.title">Choisir un serveur</h1>
+      <p class="hint" style="margin-top:7px;font-size:12.5px">
+        <span data-i18n="sv.lead"></span>
+        <span id="sv-count" class="mono"></span>
+      </p>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+      <div style="display:flex;align-items:center;gap:8px;height:var(--ctl-h);width:232px;padding:0 10px;background:var(--bg);border:1px solid var(--line-2);border-radius:2px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--fg-3)" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="sv-filter" type="search" style="flex:1 1 auto;min-width:0;height:100%;background:none;border:none;outline:none;color:var(--fg);font:400 12.5px var(--sans)"
+               data-i18n-attr="placeholder:sv.filter, aria-label:sv.filter">
+      </div>
+      <label class="btn" style="cursor:pointer;gap:8px">
+        <input id="sv-hide" type="checkbox" style="width:16px;height:16px;accent-color:var(--acc);flex-shrink:0">
+        <span data-i18n="sv.hideNoBot">Masquer sans le bot</span>
+      </label>
+      <button class="btn" type="button" id="sv-refresh">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.6-6.4M21 4v5h-5"/></svg>
+        <span data-i18n="c.refresh">Actualiser</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="glist">
+    <div class="glist__head" aria-hidden="true">
+      <span style="width:34px;flex-shrink:0"></span>
+      <span style="flex:1 1 auto" data-i18n="sv.colServer">Serveur</span>
+      <span style="width:108px;text-align:right" data-i18n="sv.colMembers">Membres</span>
+      <span class="gstate" data-i18n="sv.colState">État</span>
+      <span class="gact" style="justify-content:flex-end" data-i18n="sv.colAction">Action</span>
+    </div>
+    <div id="sv-list" aria-live="polite" aria-busy="true"></div>
+  </div>
+
+  <div class="notice" style="margin-top:16px">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--fg-3)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.01"/></svg>
+    <div style="flex:1 1 auto">
+      <p class="notice__title" data-i18n="sv.missTitle">Un serveur manque dans la liste ?</p>
+      <p class="hint" data-i18n="sv.missBody"></p>
+    </div>
+    <a href="#" data-cfg-link="DOCS_URL" style="font:500 12.5px var(--sans);white-space:nowrap" data-i18n="sv.missLink">Comment obtenir le droit</a>
+  </div>
+
+</main>
+
+<script src="assets/js/config.js?v=7"></script>
+<script src="assets/js/lang/fr.js?v=8"></script>
+<script src="assets/js/lang/en.js?v=8"></script>
+<script src="assets/js/lang/es.js?v=8"></script>
+<script src="assets/js/lang/de.js?v=8"></script>
+<script src="assets/js/lang/ko.js?v=8"></script>
+<script src="assets/js/app.js?v=8"></script>
+<script src="assets/js/page-servers.js"></script>
+</body>
+</html>

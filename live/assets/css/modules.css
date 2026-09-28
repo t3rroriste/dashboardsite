@@ -1,0 +1,233 @@
+/* =========================================================================
+   modules.html — mise en page.
+   Chargé APRÈS home.css, dont il reprend les tokens, la coque, la
+   navigation, le pied et les utilitaires (.label, .lead, .fine, .pill).
+   Aucun token n'est redéfini ici : une retouche de la D.A. doit continuer
+   de se faire à un seul endroit.
+
+   Règle tenue : aucun état initial d'animation n'est posé dans ce fichier.
+   Pas d'opacity: 0, pas de translate. Si le script échoue, la page reste
+   entièrement lisible — c'est le JS qui masque, et lui seul.
+   ========================================================================= */
+
+/* ============================== l'en-tête ============================== */
+
+.mhead {
+  padding: 156px var(--sp-4) var(--sp-5);   /* même dégagement de nav que le héros */
+  max-width: 1180px; margin: 0 auto;
+}
+.mhead__title {
+  font-size: clamp(2.25rem, 3.8vw, 3.5rem);
+  line-height: 1.04; letter-spacing: -0.03em; font-weight: 500;
+  text-transform: lowercase;
+  margin: var(--sp-3) 0 var(--sp-3); max-width: 20ch;
+}
+.mhead__lead { max-width: 54ch; margin: 0; }
+
+/* ============================== un module ============================== */
+
+/* Pleine hauteur : chaque module occupe l'écran, on n'en lit qu'un à la
+   fois. Le filet du haut donne le rythme sans ajouter de cadre. */
+.mod {
+  min-height: 100dvh;
+  display: flex; align-items: center;
+  padding: var(--sp-5) var(--sp-4);
+  border-top: 1px solid var(--hair);
+  scroll-margin-top: 120px;          /* la pilule de navigation est fixe */
+}
+.mod__in {
+  width: 100%; max-width: 1180px; margin: 0 auto;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--sp-5); align-items: center;
+}
+
+/* L'alternance. `order` plutôt que deux jeux de `grid-column` : le DOM
+   garde partout le même ordre texte-puis-visuel, donc la lecture au
+   clavier et au lecteur d'écran ne dépend pas de la colonne affichée. */
+.mod:nth-of-type(even) .mod__text   { order: 2; }
+.mod:nth-of-type(even) .mod__visual { order: 1; }
+
+/* Pas de text-transform ici, contrairement au reste des titres du site :
+   ce sont des noms de fonction (Queue / Scrims, ClanWar), et forcer le bas
+   de casse mangeait leurs majuscules. La casse vient donc de la chaine
+   traduite, pas du CSS. */
+.mod__title {
+  font-size: clamp(1.75rem, 2.8vw, 2.5rem);
+  line-height: 1.08; letter-spacing: -0.02em; font-weight: 500;
+  margin: 0 0 var(--sp-2);
+}
+/* Le paragraphe porte seul tout le module depuis que les puces sont
+   parties : il monte donc a la taille du texte de lecture, pas a celle
+   d'une accroche secondaire. La mesure reste courte pour que l'oeil
+   retrouve le debut de ligne sans effort. */
+.mod__body {
+  font-size: 15.5px; line-height: 1.68; color: var(--ink-60);
+  max-width: 52ch; margin: 0;
+}
+
+/* ============================== maquettes ============================== */
+
+/* Ni image ni capture : des blocs composés avec les tokens du site, pour
+   qu'ils vieillissent avec lui. Purement décoratifs, aria-hidden côté HTML. */
+.mod__visual { display: flex; justify-content: center; }
+
+/* Le parallaxe est porté par la maquette, pas par son conteneur : anime.js
+   possède déjà la chaîne transform de .mod__visual pour la révélation, et
+   deux transforms sur le même élément se marcheraient dessus. Valeur par
+   défaut 0 : sans JS, rien ne bouge et rien n'est décalé. */
+.mock {
+  transform: translateY(var(--flot, 0px));
+  width: 100%; max-width: 420px;
+  background: var(--raised);
+  border-radius: var(--r-card);
+  padding: 18px;
+  box-shadow: 0 60px 120px -60px rgba(0,0,0,.9);
+  font-size: 12.5px; color: var(--ink-60);
+  display: grid; gap: 14px;
+}
+.mock--card { background: none; box-shadow: none; padding: 0; }
+
+.mock__bar {
+  display: flex; align-items: center; gap: 8px;
+  padding-bottom: 12px; border-bottom: 1px solid var(--hair);
+  color: var(--ink); font-weight: 500;
+}
+.mock__hash { color: var(--ink-40); }
+.mock__name { flex: 1 1 auto; }
+.mock__tag {
+  font-size: 11px; color: var(--ink-60);
+  background: var(--film); border-radius: var(--r-pill); padding: 3px 9px;
+}
+
+/* --- la queue --- */
+.mock__teams { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.mock__team { display: grid; gap: 6px; }
+.mock__head { display: flex; align-items: center; gap: 7px; color: var(--ink); font-weight: 500; }
+.mock__sw { width: 9px; height: 9px; border-radius: 50%; background: var(--ink-60); flex: 0 0 auto; }
+/* L'unique emploi de l'accent dans cette section : il montre que chaque
+   équipe porte sa couleur, sans devenir un fond ni un dégradé. */
+.mock__sw--a { background: var(--accent); }
+.mock__slot {
+  background: var(--panel); border-radius: 9px; padding: 7px 10px;
+  min-height: 15px;
+}
+.mock__slot--vide { background: none; border: 1px dashed var(--hair); }
+
+/* --- listes de lignes : classement, salons, interrupteurs, réglages --- */
+.mock__rows { display: grid; gap: 2px; }
+.mock__row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 10px; border-radius: 10px; background: var(--panel);
+}
+.mock__rank { width: 14px; color: var(--ink-40); font-size: 11px; }
+.mock__who { flex: 1 1 auto; color: var(--ink); min-width: 0;
+             overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mock__pts { font-variant-numeric: tabular-nums; color: var(--ink-60); }
+.mock__delta { font-size: 11px; color: var(--ink-40); width: 34px; text-align: right; }
+.mock__delta--up { color: var(--accent); }     /* unique accent de la section */
+.mock__row--chan .mock__who { color: var(--ink-60); }
+.mock__spk { color: var(--ink-40); display: flex; }
+.mock__cat { font-size: 10.5px; letter-spacing: .08em; color: var(--ink-40); padding-left: 4px; }
+
+/* --- interrupteurs --- */
+.mock__tog {
+  width: 30px; height: 17px; border-radius: 999px; flex: 0 0 auto;
+  background: var(--film); position: relative;
+}
+.mock__tog::after {
+  content: ""; position: absolute; top: 3px; left: 3px;
+  width: 11px; height: 11px; border-radius: 50%; background: var(--ink-40);
+}
+.mock__tog--on { background: rgba(244,241,236,.22); }
+.mock__tog--on::after { left: auto; right: 3px; background: var(--ink); }
+
+/* --- la grille des journaux --- */
+.mock__grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+.mock__chip {
+  text-align: center; font-size: 10.5px; color: var(--ink-60);
+  background: var(--panel); border-radius: 8px; padding: 6px 2px;
+}
+
+/* --- la carte de duel --- */
+.mock__msg { display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 12px; }
+.mock__av img { width: 28px; height: 28px; border-radius: 50%; display: block; }
+.mock__msgin { display: grid; gap: 8px; min-width: 0; }
+.mock__embed {
+  background: var(--raised); border-radius: var(--r-media);
+  border-left: 2px solid var(--hair);
+  padding: 14px; display: grid; gap: 10px;
+}
+.mock__score { display: flex; align-items: center; justify-content: center; gap: 10px; color: var(--ink-60); }
+.mock__score b { color: var(--ink); font-weight: 500; }
+.mock__score em {
+  font-style: normal; font-size: 22px; font-weight: 500; color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.mock__sep { color: var(--ink-40); }
+.mock__voteline { height: 4px; border-radius: 999px; background: var(--film); overflow: hidden; }
+.mock__voteline i { display: block; height: 100%; width: var(--p, 50%); background: var(--ink-60); }
+.mock__vote { font-size: 11px; color: var(--ink-40); text-align: center; }
+
+/* --- pied de maquette --- */
+.mock__foot { display: flex; gap: 6px; flex-wrap: wrap; }
+.mock__pill {
+  font-size: 11px; color: var(--ink-60);
+  background: var(--panel); border-radius: var(--r-pill); padding: 4px 10px;
+}
+.mock__pill--acc { color: var(--accent); }     /* unique accent de la section */
+
+/* ========================= appel à l'action ============================ */
+
+.mcta {
+  border-top: 1px solid var(--hair);
+  padding: var(--sp-5) var(--sp-4);
+}
+.mcta__in {
+  max-width: 1180px; margin: 0 auto;
+  display: grid; gap: var(--sp-3); justify-items: start;
+}
+.mcta__title {
+  font-size: clamp(1.75rem, 2.8vw, 2.5rem);
+  line-height: 1.08; letter-spacing: -0.02em; font-weight: 500;
+  text-transform: lowercase; margin: 0;
+}
+.mcta .lead { max-width: 46ch; margin: 0; }
+
+/* ============================== responsive ============================= */
+
+@media (max-width: 1100px) {
+  .mhead { padding: 144px var(--sp-4) var(--sp-4); }
+  .mod__in { grid-template-columns: minmax(0, 1fr); gap: var(--sp-3); }
+  /* Une colonne : l'alternance n'a plus de sens, et laisser `order` actif
+     ferait passer le visuel avant son titre une section sur deux. */
+  .mod:nth-of-type(even) .mod__text,
+  .mod:nth-of-type(even) .mod__visual { order: 0; }
+  .mod__visual { justify-content: flex-start; }
+  .mod { min-height: 0; padding: var(--sp-4) var(--sp-4); }
+}
+
+@media (max-width: 780px) {
+  .mhead { padding: 128px var(--sp-4) var(--sp-4); }
+  .mod__body { font-size: 15px; }
+  .mock { max-width: none; }
+  .mock__grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+/* ===================== anti-flash de l'en-tête ========================= */
+
+/* Seul l'en-tête est masqué le temps que le script pose ses états. Les
+   modules restent visibles : voir la note en tête de fichier. */
+@media (prefers-reduced-motion: no-preference) {
+  html.motion-pending [data-reveal] { visibility: hidden; }
+}
+html.motion-force.motion-pending [data-reveal] { visibility: hidden; }
+
+/* ==================== mouvement réduit : bloquant ====================== */
+
+@media (prefers-reduced-motion: reduce) {
+  .mhead [data-reveal],
+  .mod, .mod__visual, .mock,
+  .mod__title, .mod__body {
+    transform: none !important; opacity: 1 !important; filter: none !important;
+  }
+}

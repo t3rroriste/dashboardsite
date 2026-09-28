@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="fr" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Préparation du panneau — CreateYourQueue</title>
+<meta name="color-scheme" content="dark">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="assets/css/home.css?v=15">
+<link rel="stylesheet" href="assets/css/auth.css?v=3">
+<script>
+(function (h) {
+  h.classList.remove('no-js');
+  if (/[?&]motion=on(&|$)/.test(location.search)) h.classList.add('motion-force');
+})(document.documentElement);
+</script>
+</head>
+<body>
+
+<main class="shell" id="main">
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="splash">
+    <div class="splash__halo" aria-hidden="true" data-halo></div>
+
+    <div class="splash__logo">
+      <!-- L'anneau tient le compte à rebours. r=63 sur une boîte de 132 :
+           le trait reste à l'intérieur sans être rogné. -->
+      <svg class="splash__ring" viewBox="0 0 132 132" aria-hidden="true">
+        <circle class="splash__track" cx="66" cy="66" r="63"></circle>
+        <circle class="splash__arc" cx="66" cy="66" r="63" data-arc></circle>
+      </svg>
+      <img src="assets/img/logo.png" alt="CreateYourQueue" width="92" height="92" data-logo>
+    </div>
+
+    <h1 class="splash__title" data-title data-i18n="au.splashTitle">CreateYourQueue</h1>
+    <p class="lead splash__lead" data-lead data-i18n="au.splashLead"></p>
+
+    <p class="splash__skip" data-skip>
+      <a href="#" data-go data-i18n="au.splashNow">Ouvrir maintenant</a>
+    </p>
+  </div>
+</main>
+
+<script src="assets/js/vendor/anime.umd.min.js"></script>
+<script src="assets/js/config.js?v=7"></script>
+<script src="assets/js/lang/fr.js?v=8"></script>
+<script src="assets/js/lang/en.js?v=8"></script>
+<script src="assets/js/lang/es.js?v=8"></script>
+<script src="assets/js/lang/de.js?v=8"></script>
+<script src="assets/js/lang/ko.js?v=8"></script>
+<script src="assets/js/app.js?v=8"></script>
+<script src="assets/js/page-welcome.js?v=1"></script>
+</body>
+</html>

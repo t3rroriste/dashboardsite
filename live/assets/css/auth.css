@@ -1,0 +1,249 @@
+/* =========================================================================
+   CreateYourQueue — connexion et accueil animé
+   Se pose SUR home.css, dont elle reprend les jetons : noir chaud, Geist,
+   coque arrondie, grain, pilules. Elle n'ajoute aucune couleur : le bleu
+   de Discord reste dans le logo, jamais dans un aplat de l'interface.
+   ========================================================================= */
+
+/* ============================ la scène ================================ */
+
+/* Les deux pages n'ont qu'un bloc, centré dans la coque. Pas de héros
+   collant ici : rien ne défile, donc rien à retenir en haut. */
+.auth {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: calc(100dvh - var(--gutter) * 2 - 96px);
+  padding: var(--sp-4) var(--sp-3) var(--sp-5);
+}
+
+.auth__step { width: 100%; max-width: 460px; }
+.auth__step[hidden] { display: none; }
+
+.auth__eyebrow { display: block; margin-bottom: var(--sp-2); }
+
+.auth__title {
+  font-size: clamp(26px, 4.4vw, 38px);
+  line-height: 1.12;
+  margin-bottom: var(--sp-1);
+}
+
+.auth__lead { margin: 0 auto var(--sp-3); max-width: 38ch; }
+
+/* Un titre sans accroche sous lui : c'est alors LUI qui porte l'écart
+   avant le bouton, sinon les deux se collent. */
+.auth__title--solo { margin-bottom: var(--sp-3); }
+
+/* La mention sous le bouton. Elle dit ce que le site demande à Discord ;
+   c'est la seule chose qui rassure vraiment avant un écran d'autorisation. */
+.auth__fine {
+  display: flex; align-items: flex-start; gap: 8px;
+  justify-content: center; text-align: left;
+  max-width: 38ch; margin: var(--sp-2) auto 0;
+}
+.auth__fine svg { flex: 0 0 auto; margin-top: 2px; color: var(--ink-40); }
+
+/* ====================== le bouton Discord ============================= */
+
+/* Une pilule pleine, comme le CTA de l'accueil : sur un écran, un seul
+   objet est rempli, et ici c'est celui-là. Le logo garde sa couleur de
+   marque, le reste est monochrome. */
+.pill--discord {
+  gap: 10px;
+  padding-left: 22px;
+}
+.pill--discord svg { flex: 0 0 auto; }
+
+/* Le disque qui porte le logo Discord à côté du titre. Quatrième famille
+   de formes de la D.A. (coque, carte, pilule, disque) : c'est elle. */
+.auth__mark {
+  display: flex; align-items: center; justify-content: center;
+  gap: var(--sp-2);
+  margin: 0 auto var(--sp-3);
+}
+.auth__disc {
+  display: grid; place-items: center;
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: var(--raised);
+  box-shadow: inset 0 1px 0 rgba(244,241,236,.06);
+}
+.auth__disc--brand { background: #5865F2; }
+.auth__disc img { width: 34px; height: 34px; }
+
+/* Le trait qui relie les deux disques : le compte et le bot, liés. */
+.auth__tie {
+  width: 34px; height: 1px;
+  background: linear-gradient(90deg, var(--hair), var(--ink-40), var(--hair));
+}
+
+/* ========================= la personne ================================ */
+
+/* Une fois connectée, on montre QUI est connecté. Sans ça, l'étape 2
+   demande d'inviter un bot sans dire sur quel compte on se trouve. */
+.auth__who {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 6px 14px 6px 6px;
+  margin-bottom: var(--sp-2);
+  background: var(--film);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-pill);
+}
+.auth__avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--raised); object-fit: cover;
+  display: grid; place-items: center;
+  font-size: 11px; font-weight: 500; color: var(--ink-60);
+}
+.auth__name { font-size: 13px; font-weight: 500; }
+
+/* ====================== la liste des serveurs ========================= */
+
+.auth__guilds {
+  display: flex; flex-direction: column; gap: 6px;
+  margin-top: var(--sp-2);
+  text-align: left;
+}
+
+.gcard {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 12px;
+  background: var(--film);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-media);
+  color: inherit;
+  transition: background 160ms var(--e-soft), border-color 160ms var(--e-soft);
+}
+.gcard:hover { background: var(--raised); border-color: rgba(244,241,236,.14); }
+.gcard:active { transform: scale(.995); }
+
+.gcard__icon {
+  flex: 0 0 auto;
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--raised-2); object-fit: cover;
+  display: grid; place-items: center;
+  font-size: 12px; font-weight: 500; color: var(--ink-60);
+}
+.gcard__body { flex: 1 1 auto; min-width: 0; }
+.gcard__name {
+  display: block; font-size: 13.5px; font-weight: 500;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.gcard__meta { display: block; font-size: 11.5px; color: var(--ink-60); }
+.gcard__go { flex: 0 0 auto; color: var(--ink-40); }
+.gcard:hover .gcard__go { color: var(--accent); }
+
+/* ============================ divers ================================== */
+
+.auth__sep {
+  display: flex; align-items: center; gap: 12px;
+  margin: var(--sp-3) 0 var(--sp-2);
+  font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink-40);
+}
+.auth__sep::before, .auth__sep::after {
+  content: ''; flex: 1 1 auto; height: 1px; background: var(--hair);
+}
+
+.auth__link {
+  display: inline-block; margin-top: var(--sp-2);
+  font-size: 12.5px; color: var(--ink-60);
+  border-bottom: 1px solid var(--hair);
+}
+.auth__link:hover { color: var(--ink); border-bottom-color: var(--ink-40); }
+
+/* Le cadre d'erreur. Pas de rouge : la D.A. n'a qu'un accent, et une
+   panne de connexion se lit très bien avec un mot et un glyphe. */
+.auth__alert {
+  display: flex; gap: 10px; text-align: left;
+  padding: 14px 16px;
+  background: var(--film);
+  border: 1px solid var(--hair);
+  border-radius: var(--r-media);
+  margin-bottom: var(--sp-2);
+}
+.auth__alert svg { flex: 0 0 auto; margin-top: 2px; color: var(--accent); }
+
+/* ==================== l'écran d'accueil animé ========================= */
+
+/* welcome.html. Un seul objet à l'écran : le logo. Le compte à rebours est
+   un anneau autour de lui, pas un chiffre : on n'a pas besoin de lire le
+   temps, seulement de voir qu'il avance. */
+.splash {
+  position: relative; z-index: 2;
+  isolation: isolate;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  min-height: calc(100dvh - var(--gutter) * 2);
+  text-align: center;
+  padding: var(--sp-3);
+}
+
+.splash__logo {
+  position: relative;
+  width: 132px; height: 132px;
+  display: grid; place-items: center;
+  margin-bottom: var(--sp-3);
+}
+.splash__logo img {
+  width: 92px; height: 92px;
+  /* will-change : le logo tourne et change d'échelle pendant toute la
+     séquence, autant prévenir le compositeur une fois pour toutes. */
+  will-change: transform, opacity;
+}
+
+/* L'anneau de progression. Deux cercles SVG superposés : la piste, puis
+   l'arc qui se remplit sur les 5 secondes d'attente. */
+.splash__ring { position: absolute; inset: 0; transform: rotate(-90deg); }
+.splash__ring circle { fill: none; stroke-width: 1.5; }
+.splash__track { stroke: var(--hair); }
+.splash__arc   { stroke: var(--accent); stroke-linecap: round; }
+
+.splash__title { font-size: clamp(22px, 3.6vw, 30px); margin-bottom: 6px; }
+.splash__lead  { max-width: 34ch; }
+
+/* Le halo derrière le logo, repris du héros de l'accueil.
+   Centré par inset + margin:auto, et SURTOUT pas par un translate : le
+   script anime son échelle, et anime.js réécrit la propriété `transform`
+   entière. Un translate de centrage posé ici serait effacé à la première
+   image, et le halo partirait dans un coin. */
+.splash__halo {
+  position: absolute; z-index: -1;
+  inset: 0; margin: auto;
+  width: min(560px, 80vw); height: min(560px, 80vw);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(192,138,90,.16), transparent 65%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+/* Le lien de secours : si la redirection ne part pas (onglet en arrière-plan,
+   minuteur gelé), la personne n'est pas coincée devant un logo. */
+.splash__skip {
+  margin-top: var(--sp-3);
+  font-size: 12.5px; color: var(--ink-40);
+}
+.splash__skip a { border-bottom: 1px solid var(--hair); }
+.splash__skip a:hover { color: var(--ink); }
+
+/* ========================== petit écran =============================== */
+
+@media (max-width: 560px) {
+  .auth { padding: var(--sp-3) var(--sp-2) var(--sp-4); }
+  .auth__disc { width: 54px; height: 54px; }
+  .auth__disc img { width: 28px; height: 28px; }
+  .splash__logo { width: 108px; height: 108px; }
+  .splash__logo img { width: 74px; height: 74px; }
+}
+
+/* ===================== moins de mouvement ============================= */
+
+/* Les deux pages restent entièrement utilisables sans animation : le JS
+   pose les états finaux et l'anneau saute directement à plein. */
+@media (prefers-reduced-motion: reduce) {
+  .gcard:active { transform: none; }
+}
