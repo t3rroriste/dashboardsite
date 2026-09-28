@@ -1,0 +1,5 @@
+Ce fichier est le déclencheur de `publish-live.yml`.
+
+Sa présence dans un push sur une branche `claude/**` envoie le contenu de
+`live/` sur cyqbot.eu. Le supprimer ne publie rien : le workflow se saute
+quand le fichier n'est pas là.
