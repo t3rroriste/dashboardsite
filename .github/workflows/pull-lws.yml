@@ -12,9 +12,9 @@ on:
   workflow_dispatch:
     inputs:
       remote_dir:
-        description: "Dossier distant à rapatrier, relatif au dossier de connexion FTP"
+        description: "Dossier distant à rapatrier, relatif au dossier de connexion FTP (= racine web)"
         required: false
-        default: "www/"
+        default: "./"
   # Permet de lancer le tout premier rapatriement depuis une branche de travail,
   # avant que le workflow n'existe sur `main` (workflow_dispatch n'y voit que
   # les workflows de la branche par défaut).
@@ -64,10 +64,10 @@ jobs:
             set ssl:verify-certificate no;
             set net:timeout 20;
             open -u '${FTP_USERNAME}','${FTP_PASSWORD}' '${FTP_SERVER}';
-            echo '--- dossier de connexion ---'; pwd; ls;
-            echo '--- www/ (relatif) ---';       ls www 2>&1 || true;
-            echo '--- /www/ (absolu) ---';       ls /www 2>&1 || true;
-          " | tee remote-tree.txt
+            pwd;
+            ls;
+          " > remote-tree.txt
+          cat remote-tree.txt
           { echo "### Arborescence distante"; echo '```'; cat remote-tree.txt; echo '```'; } \
             >> "$GITHUB_STEP_SUMMARY"
 
@@ -76,11 +76,12 @@ jobs:
           FTP_SERVER: ${{ secrets.LWS_FTP_SERVER }}
           FTP_USERNAME: ${{ secrets.LWS_FTP_USERNAME }}
           FTP_PASSWORD: ${{ secrets.LWS_FTP_PASSWORD }}
-          REMOTE_DIR: ${{ inputs.remote_dir || 'www/' }}
+          REMOTE_DIR: ${{ inputs.remote_dir || './' }}
         run: |
           set -euo pipefail
           mkdir -p live
-          # `preview/` est notre propre build, pas le site à sauvegarder.
+          # `www/` contient nos propres builds déposés par deploy-lws.yml, pas le
+          # site à sauvegarder. `.quarantaine/` est un dossier du panneau LWS.
           lftp -c "
             set ftp:ssl-force true;
             set ftp:ssl-protect-data true;
@@ -90,7 +91,7 @@ jobs:
             set cmd:fail-exit true;
             open -u '${FTP_USERNAME}','${FTP_PASSWORD}' '${FTP_SERVER}';
             mirror --verbose --delete --parallel=4 \
-              -X .git/ -X node_modules/ -X preview/ \
+              -X .git/ -X node_modules/ -X www/ -X .quarantaine/ \
               -X awstats/ -X stats/ -X logs/ -X tmp/ \
               -X '*.sql' -X '*.zip' -X '*.gz' -X '*.tar' -X '*.log' \
               '${REMOTE_DIR}' live/;
