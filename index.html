@@ -3,20 +3,221 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dashboard</title>
+    <meta name="color-scheme" content="dark" />
+    <title>Atelier — Tableau de bord</title>
     <link rel="stylesheet" href="/src/style.css" />
   </head>
   <body>
+    <div class="grain" aria-hidden="true"></div>
+
+    <nav class="nav" aria-label="Navigation principale">
+      <span class="nav__mark">Atelier</span>
+      <ul class="nav__list">
+        <li><a class="nav__link is-active" href="#hero">Vue d'ensemble</a></li>
+        <li><a class="nav__link" href="#performance">Performance</a></li>
+        <li><a class="nav__link" href="#collections">Collections</a></li>
+        <li><a class="nav__link" href="#commandes">Commandes</a></li>
+      </ul>
+      <a class="btn btn--primary nav__cta" href="#commandes">
+        Rapport <span class="btn__arrow" aria-hidden="true">↗</span>
+      </a>
+    </nav>
+
     <main class="shell">
-      <p class="label">Déploiement</p>
-      <h1 class="title">Le pipeline<br />vers LWS<br />est en place.</h1>
-      <p class="body">
-        Cette page est un placeholder. Elle confirme que chaque push sur
-        <code>main</code> reconstruit le site et l'envoie sur l'hébergement.
-        Elle sera remplacée par le dashboard.
-      </p>
-      <p class="stamp" id="stamp"></p>
+      <div class="stack">
+        <!-- ── Héros ─────────────────────────────────────────────── -->
+        <section class="hero" id="hero">
+          <div class="hero__recede">
+            <div class="hero__inner">
+              <p class="label reveal">Tableau de bord · Septembre 2026</p>
+              <h1 class="hero__title">
+                <span class="line"><span class="line__in">Vue d'ensemble</span></span>
+                <span class="line"><span class="line__in">de la maison,</span></span>
+                <span class="line"><span class="line__in">au jour le jour.</span></span>
+              </h1>
+              <p class="hero__body reveal">
+                Trois collections actives, 1 284 pièces en atelier, et une
+                marge qui tient ses promesses depuis onze semaines.
+              </p>
+            </div>
+
+            <div class="hero__media" aria-hidden="true">
+              <div class="hero__object"></div>
+              <div class="hero__dust"></div>
+            </div>
+
+            <aside class="hero__card">
+              <div class="hero__thumb" aria-hidden="true"></div>
+              <p class="hero__cardtext">Collection Oak&nbsp;— 38&nbsp;pièces livrées cette semaine.</p>
+              <div class="hero__cardnav">
+                <button class="disc" type="button" aria-label="Précédent">←</button>
+                <button class="disc" type="button" aria-label="Suivant">→</button>
+              </div>
+            </aside>
+
+            <p class="hero__wordmark" aria-hidden="true">Atelier</p>
+          </div>
+        </section>
+
+        <!-- ── Performance ───────────────────────────────────────── -->
+        <section class="panel" id="performance">
+          <header class="panel__head">
+            <p class="label reveal">Performance</p>
+            <h2 class="panel__title reveal">Onze semaines de croissance nette.</h2>
+          </header>
+
+          <div class="kpis">
+            <article class="kpi">
+              <p class="label">Chiffre d'affaires</p>
+              <p class="kpi__value" data-count="1284500" data-compact data-suffix=" €"></p>
+              <p class="kpi__meta"><span class="pill pill--up">+12,4 %</span> vs. août</p>
+              <svg class="spark" viewBox="0 0 120 32" fill="none" preserveAspectRatio="none" aria-hidden="true">
+                <path class="spark__line" d="M0 26 L20 22 L40 24 L60 15 L80 17 L100 8 L120 4" />
+              </svg>
+            </article>
+
+            <article class="kpi">
+              <p class="label">Commandes</p>
+              <p class="kpi__value" data-count="342"></p>
+              <p class="kpi__meta"><span class="pill pill--up">+28</span> cette semaine</p>
+              <svg class="spark" viewBox="0 0 120 32" fill="none" preserveAspectRatio="none" aria-hidden="true">
+                <path class="spark__line" d="M0 24 L20 25 L40 18 L60 20 L80 12 L100 14 L120 6" />
+              </svg>
+            </article>
+
+            <article class="kpi">
+              <p class="label">Pièces en atelier</p>
+              <p class="kpi__value" data-count="1284"></p>
+              <p class="kpi__meta"><span class="pill">stable</span> sur 30 jours</p>
+              <svg class="spark" viewBox="0 0 120 32" fill="none" preserveAspectRatio="none" aria-hidden="true">
+                <path class="spark__line" d="M0 16 L20 14 L40 17 L60 15 L80 16 L100 13 L120 15" />
+              </svg>
+            </article>
+
+            <article class="kpi">
+              <p class="label">Marge brute</p>
+              <p class="kpi__value" data-count="46" data-suffix=" %"></p>
+              <p class="kpi__meta"><span class="pill pill--up">+1,8 pt</span> vs. août</p>
+              <svg class="spark" viewBox="0 0 120 32" fill="none" preserveAspectRatio="none" aria-hidden="true">
+                <path class="spark__line" d="M0 22 L20 20 L40 21 L60 16 L80 14 L100 12 L120 9" />
+              </svg>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── Collections ───────────────────────────────────────── -->
+        <section class="panel" id="collections">
+          <header class="panel__head">
+            <p class="label reveal">Collections</p>
+            <h2 class="panel__title reveal">Trois lignes en production.</h2>
+          </header>
+
+          <div class="cards">
+            <article class="card card--a">
+              <div class="card__scrim"></div>
+              <div class="card__top">
+                <p class="card__name">Oak Wood</p>
+                <p class="card__year">2026</p>
+              </div>
+              <div class="card__foot">
+                <p class="card__desc">Chêne massif, finition huilée. 412 pièces.</p>
+                <span class="btn btn--ghost">Détail <span class="btn__arrow">→</span></span>
+              </div>
+            </article>
+
+            <article class="card card--b">
+              <div class="card__scrim"></div>
+              <div class="card__top">
+                <p class="card__name">Modern Shapes</p>
+                <p class="card__year">2026</p>
+              </div>
+              <div class="card__foot">
+                <p class="card__desc">Formes cintrées, série limitée. 168 pièces.</p>
+                <span class="btn btn--ghost">Détail <span class="btn__arrow">→</span></span>
+              </div>
+            </article>
+
+            <article class="card card--c">
+              <div class="card__scrim"></div>
+              <div class="card__top">
+                <p class="card__name">Terra</p>
+                <p class="card__year">2025</p>
+              </div>
+              <div class="card__foot">
+                <p class="card__desc">Terre cuite et noyer. 704 pièces.</p>
+                <span class="btn btn--ghost">Détail <span class="btn__arrow">→</span></span>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <!-- ── Commandes ─────────────────────────────────────────── -->
+        <section class="panel panel--last" id="commandes">
+          <header class="panel__head">
+            <p class="label reveal">Commandes</p>
+            <h2 class="panel__title reveal">Le flux, sur douze mois.</h2>
+          </header>
+
+          <div class="chart" aria-hidden="true">
+            <svg viewBox="0 0 900 220" fill="none" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#c08a5a" stop-opacity=".22" />
+                  <stop offset="100%" stop-color="#c08a5a" stop-opacity="0" />
+                </linearGradient>
+              </defs>
+              <path class="chart__area"
+                d="M0 176 L75 168 L150 182 L225 150 L300 158 L375 128 L450 136 L525 104 L600 112 L675 74 L750 82 L825 46 L900 38 L900 220 L0 220 Z" />
+              <path class="chart__line"
+                d="M0 176 L75 168 L150 182 L225 150 L300 158 L375 128 L450 136 L525 104 L600 112 L675 74 L750 82 L825 46 L900 38" />
+            </svg>
+            <div class="chart__axis">
+              <span>Oct</span><span>Jan</span><span>Avr</span><span>Juil</span><span>Sep</span>
+            </div>
+          </div>
+
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Référence</th>
+                <th scope="col">Collection</th>
+                <th scope="col">Pièces</th>
+                <th scope="col">Montant</th>
+                <th scope="col">État</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>CMD-2691</td><td>Oak Wood</td><td>24</td><td>38 400 €</td>
+                <td><span class="pill pill--up">Livrée</span></td>
+              </tr>
+              <tr>
+                <td>CMD-2690</td><td>Terra</td><td>12</td><td>16 800 €</td>
+                <td><span class="pill">En atelier</span></td>
+              </tr>
+              <tr>
+                <td>CMD-2688</td><td>Modern Shapes</td><td>6</td><td>27 300 €</td>
+                <td><span class="pill">En atelier</span></td>
+              </tr>
+              <tr>
+                <td>CMD-2685</td><td>Oak Wood</td><td>40</td><td>62 000 €</td>
+                <td><span class="pill pill--up">Livrée</span></td>
+              </tr>
+              <tr>
+                <td>CMD-2681</td><td>Terra</td><td>18</td><td>21 600 €</td>
+                <td><span class="pill pill--wait">En attente</span></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <footer class="foot">
+            <p>Atelier · Tableau de bord interne</p>
+            <p class="foot__stamp" id="stamp"></p>
+          </footer>
+        </section>
+      </div>
     </main>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
