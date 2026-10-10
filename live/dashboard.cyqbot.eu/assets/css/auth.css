@@ -305,6 +305,29 @@
 .gcard:hover { background: var(--raised); border-color: rgba(244,241,236,.14); }
 .gcard:active { transform: scale(.995); }
 
+/* ---- l'arrivée de la liste --------------------------------------------
+   « Actualiser » remplace le contenu de la boîte : les cartes sont des
+   éléments NEUFS à chaque fois, donc l'animation rejoue d'elle-même, sans
+   que le JavaScript ait à la déclencher.
+
+   `backwards` est ce qui rend la cascade possible : sans lui, une carte en
+   attente de son tour s'afficherait à sa place définitive avant de sauter
+   au début de l'animation. Le retard vient du rang posé par le JS, plafonné
+   pour qu'une liste de vingt serveurs ne mette pas deux secondes à
+   apparaître. */
+.gcard {
+  animation: gcard-arrivee 420ms var(--e-soft) backwards;
+  animation-delay: calc(min(var(--i, 0), 8) * 55ms);
+}
+@keyframes gcard-arrivee {
+  from { opacity: 0; transform: translateY(10px) scale(.985); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gcard { animation: none; }
+}
+
 .gcard__icon {
   flex: 0 0 auto;
   width: 34px; height: 34px; border-radius: 50%;

@@ -180,6 +180,33 @@ a { color: inherit; text-decoration: none; }
   transition: transform 240ms var(--e-out);
 }
 .pill:hover .pill__arrow { transform: translate(2px,-2px); }
+
+/* ---- le bouton du héros ----------------------------------------------
+   Lui seul se soulève et grandit au survol : c'est l'action principale de
+   la page, et la seule qui mérite d'être traitée autrement que les autres
+   pilules. Trois pixels vers le haut, 3 % de plus, et une ombre qui
+   s'étire dessous pour que le décollage se voie plutôt que de se deviner.
+
+   À savoir si l'on touche à l'ouverture : anime.js écrit `transform` en
+   style inline, et un style inline l'emporte sur `:hover`. page-home.js
+   efface donc ces transformations une fois la cascade finie, sinon ce
+   survol-ci resterait sans effet. */
+.pill[data-hero="cta"] {
+  transition: transform 260ms var(--e-out), background 200ms var(--e-soft),
+              box-shadow 300ms var(--e-soft);
+}
+.pill[data-hero="cta"]:hover,
+.pill[data-hero="cta"]:focus-visible {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 16px 32px -18px rgba(0,0,0,.95),
+              0 5px 12px -8px rgba(0,0,0,.6);
+}
+.pill[data-hero="cta"]:active { transform: translateY(0) scale(.98); }
+
+@media (prefers-reduced-motion: reduce) {
+  .pill[data-hero="cta"]:hover,
+  .pill[data-hero="cta"]:focus-visible { transform: none; }
+}
 .pill[aria-disabled="true"] { opacity: .4; cursor: not-allowed; }
 
 /* 2 — pilule fantôme : tout le reste */

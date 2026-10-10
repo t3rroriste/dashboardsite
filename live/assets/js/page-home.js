@@ -77,10 +77,20 @@
       utils.set($('[data-hero-in]'), { scale: 1, y: 0, opacity: 1, filter: 'none' });
       var all = [nav, matter].concat(around).concat(mots).filter(Boolean);
       utils.set(all, { opacity: 1 });
+      rendreLaMainAuCss();
       return null;
     }
 
-    var tl = createTimeline({ defaults: { ease: OUT } });
+    /* Une fois l'ouverture terminée, on efface les transformations que la
+       bibliothèque a écrites en style inline. Sans ça, le bouton du héros
+       garde un `transform` inline, et un style inline l'emporte sur une
+       règle `:hover` : il ne pourrait plus se soulever au survol.
+       L'opacité, elle, peut rester — rien ne la dispute. */
+    function rendreLaMainAuCss() {
+      around.forEach(function (el) { el.style.transform = ''; });
+    }
+
+    var tl = createTimeline({ defaults: { ease: OUT }, onComplete: rendreLaMainAuCss });
 
     // t=0 — la coque s'installe dans l'écran
     tl.add(shell, { scale: [.96, 1], borderRadius: ['64px', '36px'], duration: 900 }, 0)
@@ -103,9 +113,9 @@
        le titre prend environ 500 ms de plus que les autres à cause du décalage
        entre ses mots, donc l'accroche doit l'attendre, ce qu'un stagger
        régulier ne sait pas faire. */
-    tl.add(lead, { opacity: 1, y: 0, duration: 550 }, 620)
-      .add(cta,  { opacity: 1, y: 0, duration: 550 }, 740)
-      .add(note, { opacity: 1, y: 0, duration: 500 }, 840);
+    if (lead) tl.add(lead, { opacity: 1, y: 0, duration: 550 }, 620);
+    tl.add(cta, { opacity: 1, y: 0, duration: 550 }, 740);
+    if (note) tl.add(note, { opacity: 1, y: 0, duration: 500 }, 840);
 
     /* La cascade se termine ici. Le ressort outBack qui fermait la marche
        est parti avec la carte d'accroche : c'était son seul emploi de toute

@@ -199,13 +199,16 @@
     puce.hidden = false;
   }
 
-  function carteServeur(g) {
+  /* Le second argument est le rang dans la liste, fourni par Array.map : il
+     devient `--i`, que le CSS transforme en retard d'arrivée. La cascade est
+     donc décrite une fois, en CSS, et le JS ne pilote aucune animation. */
+  function carteServeur(g, i) {
     var href = 'welcome.html?guild=' + encodeURIComponent(g.id);
     var icone = g.icon
       ? '<img class="gcard__icon" src="https://cdn.discordapp.com/icons/' + esc(g.id) + '/' +
         esc(g.icon) + '.png?size=64" alt="" width="34" height="34" loading="lazy">'
       : '<span class="gcard__icon" aria-hidden="true">' + esc(initiales(g.name)) + '</span>';
-    return '<a class="gcard" href="' + href + '">' + icone +
+    return '<a class="gcard" href="' + href + '" style="--i:' + i + '">' + icone +
       '<span class="gcard__body">' +
         '<span class="gcard__name">' + esc(g.name) + '</span>' +
         '<span class="gcard__meta">' + esc(g.owner ? t('au.owner') : t('au.manager')) + '</span>' +
