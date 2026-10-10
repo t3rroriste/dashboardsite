@@ -75,10 +75,102 @@
 .auth__disc--brand { background: #5865F2; }
 .auth__disc img { width: 34px; height: 34px; }
 
-/* Le trait qui relie les deux disques : le compte et le bot, liés. */
+/* ---- le trait qui relie les deux disques : le compte et le bot, liés ---
+   Il ne décore pas. Il dit qu'il va se passer quelque chose ENTRE ces deux
+   comptes, et que rien n'est encore fait. Une impulsion part du logo CYQ,
+   traverse, et le disque Discord accuse réception par un anneau — la
+   poignée de main, jouée en boucle.
+
+   Au survol du bouton, la cadence double et le trait s'éclaircit : le
+   geste qu'on s'apprête à faire est montré avant d'être fait. L'effet est
+   piloté par UNE variable, --liaison, pour que les trois animations
+   restent synchronisées quoi qu'il arrive.
+
+   Seuls transform et opacity sont animés : aucune mise en page ne bouge. */
+
+.auth__mark { --liaison: 2600ms; }
+
 .auth__tie {
-  width: 34px; height: 1px;
+  position: relative;
+  width: 48px; height: 2px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+/* Le trait au repos. Il vit dans un pseudo-élément pour que le parent
+   puisse masquer l'impulsion qui le traverse. */
+.auth__tie::before {
+  content: ""; position: absolute; inset: 0;
   background: linear-gradient(90deg, var(--hair), var(--ink-40), var(--hair));
+  opacity: .85;
+  transition: opacity 200ms var(--e-out, ease);
+}
+/* L'impulsion. Elle part avant le bord gauche et sort par la droite, donc
+   on ne la voit jamais apparaître ni disparaître sur place. */
+.auth__tie::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: 0;
+  width: 16px; border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--ink), transparent);
+  transform: translateX(-18px);
+  animation: tie-impulsion var(--liaison) cubic-bezier(.45,0,.25,1) infinite;
+}
+@keyframes tie-impulsion {
+  0%        { transform: translateX(-18px); opacity: 0; }
+  12%       { opacity: 1; }
+  48%       { transform: translateX(48px);  opacity: 1; }
+  58%, 100% { transform: translateX(62px);  opacity: 0; }
+}
+
+/* Les deux anneaux : l'un au départ, l'autre à l'arrivée. Le second est
+   retardé du temps que met l'impulsion à traverser — c'est ce décalage qui
+   fait lire « ça part d'ici, ça arrive là » plutôt que « ça clignote ». */
+.auth__disc { position: relative; }
+.auth__disc::after {
+  content: ""; position: absolute; inset: -1px;
+  border-radius: 50%;
+  border: 1px solid var(--ink-40);
+  opacity: 0;
+  animation: disque-anneau var(--liaison) ease-out infinite;
+}
+.auth__disc--brand::after {
+  border-color: rgba(88, 101, 242, .85);
+  animation-delay: calc(var(--liaison) * .42);
+}
+@keyframes disque-anneau {
+  0%        { opacity: .6; transform: scale(1); }
+  70%, 100% { opacity: 0;  transform: scale(1.22); }
+}
+
+/* ---- l'amplification au survol du bouton ------------------------------
+   :has() permet de réagir au survol d'un élément VOISIN sans une ligne de
+   JavaScript. Un navigateur qui ne le connaît pas ignore simplement ces
+   règles : l'animation de repos continue de tourner, rien ne casse.
+   :focus-visible est traité comme le survol — au clavier aussi, on voit ce
+   que le bouton promet. */
+.auth__step:has(.pill--discord:hover) .auth__mark,
+.auth__step:has(.pill--discord:focus-visible) .auth__mark {
+  --liaison: 1150ms;
+}
+.auth__step:has(.pill--discord:hover) .auth__tie::before,
+.auth__step:has(.pill--discord:focus-visible) .auth__tie::before {
+  opacity: 1;
+}
+.auth__step:has(.pill--discord:hover) .auth__disc,
+.auth__step:has(.pill--discord:focus-visible) .auth__disc {
+  transform: scale(1.05);
+}
+.auth__step:has(.pill--discord:hover) .auth__disc::after,
+.auth__step:has(.pill--discord:focus-visible) .auth__disc::after {
+  border-width: 2px;
+}
+.auth__disc { transition: transform 260ms var(--e-soft, cubic-bezier(.16,1,.3,1)); }
+
+/* Mouvement réduit : la règle globale de home.css ramène toutes les durées
+   à 0,001 ms, ce qui ferait clignoter l'impulsion au lieu de l'arrêter. On
+   la retire franchement, et il reste un trait fixe — qui dit la même chose,
+   en silence. */
+@media (prefers-reduced-motion: reduce) {
+  .auth__tie::after, .auth__disc::after { animation: none; opacity: 0; }
+  .auth__disc { transition: none; }
 }
 
 /* ========================= la personne ================================ */
