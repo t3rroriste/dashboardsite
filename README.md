@@ -6,6 +6,22 @@ Le site vit dans **`live/`**. Ce dossier est le miroir exact de la racine web
 sur l'hébergement LWS : ce qui est dans `live/` sur la branche `main` est ce
 qui est en ligne.
 
+Depuis le 10 octobre 2026, il contient **deux sites** :
+
+```
+live/                        cyqbot.eu            la vitrine
+  index.html guide.html modules.html
+  assets/
+  dashboard.cyqbot.eu/       dashboard.cyqbot.eu  l'application
+    login.html welcome.html servers.html dashboard.html
+    assets/
+  status.cyqbot.eu/          status.cyqbot.eu
+```
+
+Chez LWS, le dossier d'un sous-domaine est un sous-dossier de la racine web
+et porte le nom du sous-domaine. Les deux sites partent donc dans le même
+transfert, par le même workflow : il n'y a rien de plus à configurer.
+
 ---
 
 ## Développer depuis n'importe quel PC
@@ -25,8 +41,35 @@ cd live
 python3 -m http.server 8123
 ```
 
-puis ouvre <http://127.0.0.1:8123/dashboard.html>. Le panneau se navigue sans
-back-end : il affiche ses états vides au lieu d'inventer des données.
+puis ouvre <http://127.0.0.1:8123/> pour la vitrine, ou
+<http://127.0.0.1:8123/dashboard.cyqbot.eu/dashboard.html> pour le panneau.
+Il se navigue sans back-end : il affiche ses états vides au lieu d'inventer
+des données.
+
+**Les liens entre les deux sites fonctionnent aussi en local.** `app.js`
+détecte qu'il n'est sur aucun des deux vrais domaines et reproduit alors la
+disposition des dossiers : « Se connecter » mène à
+`dashboard.cyqbot.eu/login.html`, et « Retour » à `../index.html`. En ligne,
+ces mêmes liens deviennent absolus. Rien à changer entre les deux.
+
+**Un fichier commun modifié ?** `app.js`, `config.js`, les cinq langues,
+anime.js, le logo et `home.css` existent en double — une copie par site.
+Après les avoir touchés :
+
+```bash
+powershell -ExecutionPolicy Bypass -File sync-live.ps1
+```
+
+Le script recopie le socle vers `dashboard.cyqbot.eu/`. Avec `-Verifier`, il
+ne copie rien et signale simplement si les deux copies ont divergé.
+
+**Après toute modification de CSS ou de JS**, renumérote les assets, sinon
+les navigateurs gardent l'ancienne version :
+
+```bash
+powershell -ExecutionPolicy Bypass -File bump-version.ps1 -Dossier live
+powershell -ExecutionPolicy Bypass -File bump-version.ps1 -Dossier live/dashboard.cyqbot.eu
+```
 
 **Publier :**
 

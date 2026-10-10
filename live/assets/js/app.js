@@ -139,12 +139,68 @@
 
   function oauthBase() { return 'https://discord.com/oauth2/authorize'; }
 
-  /* Tous les « Se connecter » du site mènent désormais au MÊME écran,
-     login.html : c'est lui qui explique ce qui va être demandé, montre le
-     logo Discord, puis enchaîne sur l'invitation du bot. Auparavant chaque
-     bouton partait droit sur Discord — ou, avec API_BASE renseignée mais
-     sans API en face, droit sur un 404. */
-  CYQ.loginUrl = function () { return 'login.html'; };
+  /* ------------------------------------------------- les deux domaines --
+     La vitrine (cyqbot.eu) et l'application (dashboard.cyqbot.eu) sont
+     deux origines distinctes. Un lien relatif ne traverse pas : écrit sur
+     la vitrine, « login.html » chercherait cyqbot.eu/login.html, qui n'y
+     est plus.
+
+     Ces deux fonctions rendent un lien ABSOLU quand la page visée vit sur
+     l'autre domaine, et le laissent RELATIF sinon — donc en local, où les
+     deux origines de config.js sont vides, rien ne change et le site se
+     teste comme un dossier unique.                                       */
+
+  /* La scission ne vaut que sur les VRAIS domaines. Ouvert depuis un
+     dossier local, un serveur de test ou une adresse IP, le site est un
+     seul dossier : on garde les liens relatifs, sinon un clic en local
+     renverrait le testeur sur le site en production. */
+  function surUnDesDeuxDomaines() {
+    var ici = window.location.origin;
+    return (CFG.SITE_ORIGIN && ici === CFG.SITE_ORIGIN) ||
+           (CFG.APP_ORIGIN  && ici === CFG.APP_ORIGIN);
+  }
+
+  /* Le nom du dossier qui porte l'application dans le dépôt, déduit du
+     sous-domaine lui-même : live/dashboard.cyqbot.eu/. Un seul endroit où
+     cette correspondance est écrite. */
+  function dossierApp() {
+    if (!CFG.APP_ORIGIN) return '';
+    return CFG.APP_ORIGIN.replace(/^[a-z]+:\/\//i, '').replace(/[:/].*$/, '');
+  }
+
+  function versOrigine(origine, page) {
+    if (!origine) return page;
+    page = String(page).replace(/^\/+/, '');
+
+    if (surUnDesDeuxDomaines()) {
+      // Déjà du bon côté : un lien relatif est plus court et survit à un
+      // changement de domaine.
+      if (window.location.origin === origine) return page;
+      return origine + '/' + page;
+    }
+
+    /* Hors des vrais domaines — dossier local, serveur de test, adresse IP.
+       On ne part surtout pas en absolu : un clic renverrait le testeur sur
+       la production. On reproduit la DISPOSITION DES DOSSIERS du dépôt, où
+       l'application occupe un sous-dossier de la vitrine. Le dossier
+       complet se teste donc d'un bloc, liens croisés compris. */
+    var dossier = dossierApp();
+    if (!dossier) return page;
+    var dansApp = window.location.pathname.indexOf('/' + dossier + '/') !== -1;
+    var versApp = (origine === CFG.APP_ORIGIN);
+    if (versApp === dansApp) return page;
+    return versApp ? dossier + '/' + page : '../' + page;
+  }
+
+  CYQ.siteUrl = function (page) { return versOrigine(CFG.SITE_ORIGIN, page); };
+  CYQ.appUrl  = function (page) { return versOrigine(CFG.APP_ORIGIN,  page); };
+
+  /* Tous les « Se connecter » du site mènent au MÊME écran, login.html :
+     c'est lui qui explique ce qui va être demandé, montre le logo Discord,
+     puis enchaîne sur l'invitation du bot. Depuis la scission, cet écran
+     est sur le sous-domaine, et le lien part donc en absolu depuis la
+     vitrine. */
+  CYQ.loginUrl = function () { return CYQ.appUrl('login.html'); };
 
   /* Le point d'entrée côté serveur, quand il existe. C'est LUI qui tire le
      state et garde le CLIENT_SECRET ; le site ne fait que suivre. */
@@ -256,7 +312,7 @@
         return;
       }
       if (!items.length) {
-        list.innerHTML = '<div class="combo__empty"><div style="font-weight:600;font-size:12.5px;margin-bottom:5px">' +
+        list.innerHTML = '<div class="combo__empty"><div class="combo__empty-title">' +
           esc(t('ch.noMatch')) + '</div><p class="hint">' + esc(t('ch.noMatchBody')) + '</p></div>';
         return;
       }
@@ -281,8 +337,8 @@
           (o.disabled ? ' disabled' : '') + '>' +
           (o.type === 'voice' ? icon('voice', 12) : o.type === 'category' ? icon('folder', 12) :
             '<span class="hash">#</span>') +
-          '<span style="flex:1 1 auto;min-width:0">' + label + '</span>' +
-          (o.disabled ? '<span class="tag tag--warn" style="height:18px;font-size:10px">' +
+          '<span class="combo__value">' + label + '</span>' +
+          (o.disabled ? '<span class="tag tag--warn tag--sm">' +
             icon('warn', 10) + esc(t('ch.writeDenied')) + '</span>' : '') +
           (selected ? '<span class="tick">' + icon('check', 12) + '</span>' : '') +
           '</button>';
@@ -313,8 +369,8 @@
       button.classList.remove('is-error');
       button.innerHTML =
         (o.type === 'voice' ? icon('voice', 12) : o.type === 'category' ? icon('folder', 12) :
-          '<span style="color:var(--fg-3)">#</span>') +
-        '<span style="flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis">' + esc(o.name) + '</span>' +
+          '<span class="combo__sigil">#</span>') +
+        '<span class="combo__value">' + esc(o.name) + '</span>' +
         '<span class="caret">' + icon('caret', 12) + '</span>';
       close(true);
       combo.dispatchEvent(new CustomEvent('cyq:change', { bubbles: true, detail: o }));
@@ -534,7 +590,7 @@
         bar.classList.remove('savebar--err');
         bar.classList.add('savebar--ok');
         bar.innerHTML = icon('check', 14) +
-          '<span class="savebar__text" style="color:var(--ok)">' + esc(t('c.saved')) + '</span>' +
+          '<span class="savebar__text--ok">' + esc(t('c.saved')) + '</span>' +
           '<span class="savebar__detail">' + esc(new Date().toLocaleTimeString(CYQ.lang)) + '</span>';
         setTimeout(function () { location.reload(); }, 3500);
       }).catch(function (err) {
@@ -834,9 +890,26 @@
       });
     }
 
+    /* Les liens qui traversent d'un domaine à l'autre. Le HTML garde
+       l'adresse relative — elle reste juste quand tout est sur un seul
+       domaine — et c'est ici qu'elle devient absolue si besoin.
+         data-site : vers la vitrine   (index, modules, guide)
+         data-app  : vers le panneau   (login, welcome, servers, dashboard) */
+    $$('[data-site]').forEach(function (a) {
+      a.setAttribute('href', CYQ.siteUrl(a.getAttribute('data-site')));
+    });
+    $$('[data-app]').forEach(function (a) {
+      a.setAttribute('href', CYQ.appUrl(a.getAttribute('data-app')));
+    });
+
     $$('[data-cfg-link]').forEach(function (a) {
       var k = a.getAttribute('data-cfg-link');
-      if (CFG[k] && CFG[k] !== '#') a.setAttribute('href', CFG[k]);
+      if (!CFG[k] || CFG[k] === '#') return;
+      /* DOCS_URL vaut « guide.html » : une page de la vitrine. Depuis le
+         panneau, elle doit donc partir sur l'autre domaine. Une adresse
+         déjà absolue (http…, //…, mailto:) n'est jamais touchée. */
+      a.setAttribute('href', /^([a-z][a-z0-9+.-]*:|\/\/)/i.test(CFG[k])
+        ? CFG[k] : CYQ.siteUrl(CFG[k]));
     });
 
     CYQ.initCombos(document);

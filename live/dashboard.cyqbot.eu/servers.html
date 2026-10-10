@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<link rel="stylesheet" href="assets/css/app.css?v=5">
+<link rel="stylesheet" href="assets/css/app.css?v=202610101502">
 <script>
   try {
     var m = localStorage.getItem('cyq.theme');
@@ -25,7 +25,7 @@
 
 <header class="topbar">
   <div class="wrap">
-    <a class="brand" href="index.html">
+    <a class="brand" href="index.html" data-site="index.html">
       <img src="assets/img/logo.png" alt="" width="26" height="26">
       <span>CreateYourQueue</span>
     </a>
@@ -46,29 +46,29 @@
         </div>
       </div>
       <button class="btn btn--icon" type="button" data-theme-toggle aria-label="Basculer le thème"></button>
-      <a class="btn btn--ghost" href="modules.html" data-i18n="m.nav">Modules</a>
-      <a class="btn" href="index.html" data-i18n="c.back">Retour</a>
+      <a class="btn btn--ghost" href="modules.html" data-site="modules.html" data-i18n="m.nav">Modules</a>
+      <a class="btn" href="index.html" data-site="index.html" data-i18n="c.back">Retour</a>
     </div>
   </div>
 </header>
 
-<main id="main" class="wrap" style="padding-top:34px;padding-bottom:48px">
+<main id="main" class="wrap page">
 
-  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:20px;flex-wrap:wrap">
+  <div class="page__head">
     <div>
       <h1 data-i18n="sv.title">Choisir un serveur</h1>
-      <p class="hint" style="margin-top:7px;font-size:12.5px">
+      <p class="page__lead">
         <span data-i18n="sv.lead"></span>
         <span id="sv-count" class="mono"></span>
       </p>
     </div>
-    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-      <div class="search">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--fg-3)" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    <div class="actions">
+      <div class="search-box">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         <input id="sv-filter" type="search" data-i18n-attr="placeholder:sv.filter, aria-label:sv.filter">
       </div>
-      <label class="btn" style="cursor:pointer;gap:8px">
-        <input id="sv-hide" type="checkbox" style="width:16px;height:16px;accent-color:var(--acc);flex-shrink:0">
+      <label class="btn btn--check">
+        <input id="sv-hide" type="checkbox">
         <span data-i18n="sv.hideNoBot">Masquer sans le bot</span>
       </label>
       <button class="btn" type="button" id="sv-refresh">
@@ -80,33 +80,33 @@
 
   <div class="glist">
     <div class="glist__head" aria-hidden="true">
-      <span style="width:34px;flex-shrink:0"></span>
-      <span style="flex:1 1 auto" data-i18n="sv.colServer">Serveur</span>
-      <span style="width:108px;text-align:right" data-i18n="sv.colMembers">Membres</span>
+      <span class="gcol-icon"></span>
+      <span class="fill" data-i18n="sv.colServer">Serveur</span>
+      <span class="gcount" data-i18n="sv.colMembers">Membres</span>
       <span class="gstate" data-i18n="sv.colState">État</span>
-      <span class="gact" style="justify-content:flex-end" data-i18n="sv.colAction">Action</span>
+      <span class="gact" data-i18n="sv.colAction">Action</span>
     </div>
     <div id="sv-list" aria-live="polite" aria-busy="true"></div>
   </div>
 
-  <div class="notice" style="margin-top:16px">
-    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--fg-3)" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.01"/></svg>
-    <div style="flex:1 1 auto">
+  <div class="notice">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.01"/></svg>
+    <div class="fill">
       <p class="notice__title" data-i18n="sv.missTitle">Un serveur manque dans la liste ?</p>
       <p class="hint" data-i18n="sv.missBody"></p>
     </div>
-    <a href="#" data-cfg-link="DOCS_URL" style="font:500 12.5px var(--sans);white-space:nowrap" data-i18n="sv.missLink">Comment obtenir le droit</a>
+    <a class="notice__link" href="#" data-cfg-link="DOCS_URL" data-i18n="sv.missLink">Comment obtenir le droit</a>
   </div>
 
 </main>
 
-<script src="assets/js/config.js?v=7"></script>
-<script src="assets/js/lang/fr.js?v=8"></script>
-<script src="assets/js/lang/en.js?v=8"></script>
-<script src="assets/js/lang/es.js?v=8"></script>
-<script src="assets/js/lang/de.js?v=8"></script>
-<script src="assets/js/lang/ko.js?v=8"></script>
-<script src="assets/js/app.js?v=9"></script>
-<script src="assets/js/page-servers.js?v=2"></script>
+<script src="assets/js/config.js?v=202610101502"></script>
+<script src="assets/js/lang/fr.js?v=202610101502"></script>
+<script src="assets/js/lang/en.js?v=202610101502"></script>
+<script src="assets/js/lang/es.js?v=202610101502"></script>
+<script src="assets/js/lang/de.js?v=202610101502"></script>
+<script src="assets/js/lang/ko.js?v=202610101502"></script>
+<script src="assets/js/app.js?v=202610101502"></script>
+<script src="assets/js/page-servers.js?v=202610101502"></script>
 </body>
 </html>

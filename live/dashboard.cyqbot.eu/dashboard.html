@@ -1,0 +1,816 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Configuration — CreateYourQueue</title>
+<meta name="color-scheme" content="dark light">
+<meta name="robots" content="noindex">
+<link rel="icon" href="assets/img/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="assets/css/app.css?v=202610101502">
+<script>
+  try {
+    var m = localStorage.getItem('cyq.theme');
+    document.documentElement.setAttribute('data-theme', m === 'light' ? 'light' : 'dark');
+  } catch (e) {}
+</script>
+</head>
+<body data-guild="">
+
+<a class="skip-link" href="#main" data-i18n="c.skip">Aller au contenu</a>
+<div class="scrim" hidden-aria></div>
+
+<div class="app">
+
+  <!-- ===================== RAIL LATÉRAL =====================
+       Identité du serveur → catégories (Configuration / Outils) → pied.
+       L'ordre est celui d'avant ; seule la composition change.        -->
+  <div class="side">
+    <div class="side__id">
+      <div class="side__id-row">
+        <span class="gicon gicon--sm" id="g-icon" aria-hidden="true">—</span>
+        <span class="side__id-text">
+          <span class="side__name" id="g-name" title="">—</span>
+          <span class="side__members"><span id="g-members">—</span> <span data-i18n="c.members">membres</span></span>
+        </span>
+        <button class="btn btn--ghost btn--mini btn--icon side__close" type="button" data-drawer-close
+                data-i18n-attr="aria-label:c.close">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+        </button>
+      </div>
+      <a class="btn btn--ghost btn--mini btn--block btn--between side__swap" href="servers.html">
+        <span data-i18n="d.changeServer">Changer de serveur</span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m8 7 4-4 4 4M8 17l4 4 4-4"/></svg>
+      </a>
+    </div>
+
+    <nav class="side__nav" data-i18n-attr="aria-label:d.navLabel">
+      <!-- Indicateur unique, jamais recréé : il glisse d'une entrée à
+           l'autre et reste invisible tant qu'il n'est pas mesuré. -->
+      <span class="side__mark" aria-hidden="true"></span>
+
+      <p class="side__group mono" data-i18n="d.config">Configuration</p>
+      <a class="navlink" href="#langue"    data-goto="langue"><span class="navlink-label" data-i18n="s.language"></span></a>
+      <a class="navlink" href="#fonctions" data-goto="fonctions"><span class="navlink-label" data-i18n="s.functions"></span></a>
+      <a class="navlink" href="#salons"    data-goto="salons"><span class="navlink-label" data-i18n="s.channels"></span></a>
+      <a class="navlink" href="#roles"     data-goto="roles"><span class="navlink-label" data-i18n="s.roles"></span><span class="badge" id="nav-roles-warn" hidden><span aria-hidden="true">⚠</span><span class="sr-only" data-i18n="d.navWarn"></span></span></a>
+      <a class="navlink" href="#mmr"       data-goto="mmr"><span class="navlink-label" data-i18n="s.mmr"></span></a>
+      <a class="navlink" href="#queue"     data-goto="queue"><span class="navlink-label" data-i18n="s.queue"></span></a>
+      <a class="navlink" href="#presets"   data-goto="presets"><span class="navlink-label" data-i18n="s.presets"></span><span class="badge mono" id="nav-presets">0/10</span></a>
+      <a class="navlink" href="#logs"      data-goto="logs"><span class="navlink-label" data-i18n="s.logs"></span><span class="badge mono" id="nav-logs">0/10</span></a>
+      <a class="navlink" href="#securite"  data-goto="securite"><span class="navlink-label" data-i18n="s.security"></span></a>
+
+      <p class="side__group mono" data-i18n="d.tools">Outils</p>
+      <a class="navlink" href="#diagnostic" data-goto="diagnostic"><span class="navlink-label" data-i18n="d.diagnostic"></span></a>
+    </nav>
+
+    <div class="side__foot">
+      <div class="side__tools">
+        <div class="langmenu langmenu--up side__lang">
+          <button class="btn btn--ghost btn--mini btn--block btn--between" type="button" data-lang-menu
+                  aria-haspopup="menu" aria-expanded="false" data-i18n-attr="aria-label:c.lang">
+            <span class="mono" data-lang-code>FR</span>
+            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="langmenu__panel" role="menu" data-i18n-attr="aria-label:c.lang">
+            <button class="langmenu__opt" type="button" role="menuitemradio" data-lang-pick="fr" aria-checked="true">Français<span class="code">fr</span></button>
+            <button class="langmenu__opt" type="button" role="menuitemradio" data-lang-pick="en" aria-checked="false">English<span class="code">en</span></button>
+            <button class="langmenu__opt" type="button" role="menuitemradio" data-lang-pick="es" aria-checked="false">Español<span class="code">es</span></button>
+            <button class="langmenu__opt" type="button" role="menuitemradio" data-lang-pick="de" aria-checked="false">Deutsch<span class="code">de</span></button>
+            <button class="langmenu__opt" type="button" role="menuitemradio" data-lang-pick="ko" aria-checked="false" lang="ko">한국어<span class="code">ko</span></button>
+          </div>
+        </div>
+        <button class="btn btn--mini btn--icon" type="button" data-theme-toggle
+                data-i18n-attr="aria-label:c.themeLight"></button>
+      </div>
+      <div class="side__me">
+        <span class="side__avatar" aria-hidden="true"></span>
+        <span class="side__me-name" id="me-name">—</span>
+        <a class="side__back" href="index.html" data-site="index.html" data-i18n-attr="aria-label:c.back">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================== CONTENU ========================== -->
+  <div class="content">
+
+    <div class="appbar">
+      <button class="btn btn--ghost btn--icon drawer-btn" type="button" data-drawer-open aria-expanded="false"
+              data-i18n-attr="aria-label:c.menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+      <nav class="crumbs" data-i18n-attr="aria-label:d.crumbLabel">
+        <a href="servers.html" data-i18n="d.crumbServers">Serveurs</a>
+        <span class="sep" aria-hidden="true">/</span>
+        <span id="crumb-guild">—</span>
+        <span class="sep" aria-hidden="true">/</span>
+        <span aria-current="page" data-crumb-current>—</span>
+      </nav>
+      <a class="btn btn--ghost btn--sm" id="open-discord" href="#" target="_blank" rel="noopener">
+        <span data-i18n="d.openDiscord">Ouvrir dans Discord</span>
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9"/></svg>
+      </a>
+    </div>
+
+    <main id="main">
+
+      <!-- ===== état : pas d'API ===== -->
+      <div id="noapi" class="section section--flush" hidden>
+        <div class="notice notice--warn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 3 2 20h20L12 3zM12 9v5M12 17.5v.01"/></svg>
+          <div>
+            <p class="notice__title" data-i18n="d.noApi">Aucune API connectée</p>
+            <p class="hint" data-i18n="d.noApiBody"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ====================== LANGUE ======================
+           5 choix. Une colonne étroite : une colonne d'aperçu à moitié
+           vide serait du remplissage.                                -->
+      <section class="section" data-section="langue" hidden>
+        <div class="section__head">
+          <div class="section__head-main">
+            <span class="section__group" data-i18n="d.config"></span>
+            <h1 class="section__title" data-i18n="s.language">Langue</h1>
+            <p class="section__lead" data-i18n="s.languageD"></p>
+          </div>
+        </div>
+
+        <div class="one one--narrow">
+          <div class="group">
+            <div class="group__head"><span class="group__title" data-i18n="s.language"></span></div>
+            <div class="group__body">
+              <div class="optlist" role="radiogroup" aria-labelledby="lg-lbl">
+                <span id="lg-lbl" class="sr-only" data-i18n="s.language"></span>
+                <label class="opt">
+                  <input type="radio" name="botlang" value="fr" checked data-setting="language" data-label="Langue">
+                  <span class="opt__label">Français<span class="opt__code">fr</span></span>
+                </label>
+                <label class="opt">
+                  <input type="radio" name="botlang" value="en">
+                  <span class="opt__label">English<span class="opt__code">en</span></span>
+                </label>
+                <label class="opt">
+                  <input type="radio" name="botlang" value="es">
+                  <span class="opt__label">Español<span class="opt__code">es</span></span>
+                </label>
+                <label class="opt">
+                  <input type="radio" name="botlang" value="de">
+                  <span class="opt__label">Deutsch<span class="opt__code">de</span></span>
+                </label>
+                <label class="opt">
+                  <input type="radio" name="botlang" value="ko">
+                  <span class="opt__label" lang="ko">한국어<span class="opt__code">ko</span></span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="savebar savebar--sticky" hidden>
+            <span class="savebar__dot" aria-hidden="true"></span>
+            <span class="savebar__text"></span>
+            <span class="savebar__detail"></span>
+            <button class="btn btn--ghost btn--sm" type="button" data-cancel data-i18n="c.cancel"></button>
+            <button class="btn btn--primary btn--sm" type="button" data-save data-i18n="c.save"></button>
+          </div>
+
+          <div class="group">
+            <div class="group__head"><span class="group__title" data-i18n="lg.preview"></span></div>
+            <div class="group__body">
+              <p class="hint" data-i18n="ch.createdBody"></p>
+              <div class="rename">
+                <span class="chip">#file-attente</span>
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                <span class="chip chip--strong" id="lg-preview">#queue</span>
+              </div>
+              <p class="hint" data-i18n="lg.renameNote"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================== FONCTIONS ======================
+           Liste d'interrupteurs : pleine largeur, une colonne, lignes
+           hautes. Rien à mettre en regard.                           -->
+      <section class="section" data-section="fonctions" hidden>
+        <div class="section__head">
+          <div class="section__head-main">
+            <span class="section__group" data-i18n="d.config"></span>
+            <h1 class="section__title" data-i18n="s.functions">Fonctions</h1>
+            <p class="section__lead" data-i18n="s.functionsD"></p>
+          </div>
+          <button class="btn btn--ghost" type="button" data-i18n="c.reset"></button>
+        </div>
+
+        <div class="one">
+          <div class="group">
+            <div class="group__head"><span class="group__title" data-i18n="s.functions"></span><span class="group__meta mono">6</span></div>
+
+            <div class="row row--inline row--tall">
+              <span class="row__label row__label--grow"><span data-i18n="fn.leaderboard"></span><span class="row__desc" data-i18n="fn.leaderboardD"></span></span>
+              <label class="switch"><input type="checkbox" checked data-setting="feature.leaderboard" data-label="Classement"><span class="state"></span><span class="track"></span></label>
+            </div>
+            <div class="row row--inline row--tall">
+              <span class="row__label row__label--grow"><span data-i18n="fn.match"></span><span class="row__desc" data-i18n="fn.matchD"></span></span>
+              <label class="switch"><input type="checkbox" checked data-setting="feature.match" data-label="Match & MMR"><span class="state"></span><span class="track"></span></label>
+            </div>
+            <div class="row row--inline row--tall">
+              <span class="row__label row__label--grow"><span data-i18n="fn.clans"></span><span class="row__desc" data-i18n="fn.clansD"></span></span>
+              <label class="switch"><input type="checkbox" data-setting="feature.clans" data-label="Clans"><span class="state"></span><span class="track"></span></label>
+            </div>
+            <div class="row row--inline row--tall">
+              <span class="row__label row__label--grow"><span data-i18n="fn.joinAnnounce"></span><span class="row__desc" data-i18n="fn.joinAnnounceD"></span></span>
+              <label class="switch"><input type="checkbox" data-setting="feature.joinAnnounce" data-label="Annonce des adhésions"><span class="state"></span><span class="track"></span></label>
+            </div>
+            <div class="row row--inline row--tall">
+              <span class="row__label row__label--grow"><span data-i18n="fn.statusPanel"></span><span class="row__desc" data-i18n="fn.statusPanelD"></span></span>
+              <label class="switch"><input type="checkbox" checked data-setting="feature.statusPanel" data-label="Panneau d'état"><span class="state"></span><span class="track"></span></label>
+            </div>
+            <div class="row row--inline row--tall">
+              <span class="row__label row__label--grow"><span data-i18n="fn.queuePassword"></span><span class="row__desc" data-i18n="fn.queuePasswordD"></span></span>
+              <label class="switch"><input type="checkbox" data-setting="feature.queuePassword" data-label="Mot de passe des queues"><span class="state"></span><span class="track"></span></label>
+            </div>
+          </div>
+
+          <div class="savebar savebar--sticky" hidden>
+            <span class="savebar__dot" aria-hidden="true"></span>
+            <span class="savebar__text"></span>
+            <span class="savebar__detail"></span>
+            <button class="btn btn--ghost btn--sm" type="button" data-cancel data-i18n="c.cancel"></button>
+            <button class="btn btn--primary btn--sm" type="button" data-save data-i18n="c.save"></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================== SALONS ======================
+           Deux colonnes à parts égales : le tableau de droite est la
+           conséquence directe des six choix de gauche, et il a besoin
+           de ses quatre colonnes.                                    -->
+      <section class="section" data-section="salons" hidden>
+        <div class="section__head">
+          <div class="section__head-main">
+            <span class="section__group" data-i18n="d.config"></span>
+            <h1 class="section__title" data-i18n="s.channels">Salons</h1>
+            <p class="section__lead" data-i18n="s.channelsD"></p>
+          </div>
+          <button class="btn btn--ghost" type="button" data-i18n="c.reset"></button>
+        </div>
+
+        <div class="cols cols--even">
+          <div class="stack">
+            <div class="group">
+              <div class="group__head"><span class="group__title" data-i18n="s.channels"></span><span class="group__meta mono">6</span></div>
+
+              <div class="row">
+                <span class="row__label"><span data-i18n="ch.commands"></span><span class="row__desc" data-i18n="ch.commandsD"></span></span>
+                <div class="row__control combo" data-combo data-source="channels">
+                  <input type="hidden" data-setting="channel.commands" data-label="Commandes">
+                  <button class="combo__button" type="button"><span class="combo__sigil">#</span><span class="combo__value" data-i18n="ch.pickChannel"></span><span class="caret"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+                </div>
+              </div>
+
+              <div class="row">
+                <span class="row__label"><span data-i18n="ch.announcements"></span><span class="row__desc" data-i18n="ch.announcementsD"></span></span>
+                <div class="row__control combo" data-combo data-source="channels">
+                  <input type="hidden" data-setting="channel.announcements" data-label="Annonces">
+                  <button class="combo__button" type="button"><span class="combo__sigil">#</span><span class="combo__value" data-i18n="ch.pickChannel"></span><span class="caret"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+                </div>
+              </div>
+
+              <div class="row">
+                <span class="row__label"><span data-i18n="ch.waitingVoice"></span><span class="row__desc" data-i18n="ch.waitingVoiceD"></span></span>
+                <div class="row__control combo" data-combo data-source="voiceChannels">
+                  <input type="hidden" data-setting="channel.waitingVoice" data-label="Vocal d'attente">
+                  <button class="combo__button" type="button"><span class="combo__value" data-i18n="ch.pickChannel"></span><span class="caret"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+                </div>
+              </div>
+
+              <div class="row">
+                <span class="row__label"><span data-i18n="ch.results"></span><span class="row__desc" data-i18n="ch.resultsD"></span></span>
+                <div class="row__control combo" data-combo data-source="channels">
+                  <input type="hidden" data-setting="channel.results" data-label="Résultats">
+                  <button class="combo__button" type="button"><span class="combo__sigil">#</span><span class="combo__value" data-i18n="ch.pickChannel"></span><span class="caret"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+                </div>
+              </div>
+
+              <div class="row">
+                <span class="row__label"><span data-i18n="ch.leaderboard"></span><span class="row__desc" data-i18n="ch.leaderboardD"></span></span>
+                <div class="row__control combo" data-combo data-source="channels">
+                  <input type="hidden" data-setting="channel.leaderboard" data-label="Classement">
+                  <button class="combo__button" type="button"><span class="combo__sigil">#</span><span class="combo__value" data-i18n="ch.pickChannel"></span><span class="caret"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+                </div>
+              </div>
+
+              <div class="row">
+                <span class="row__label"><span data-i18n="ch.clanCategory"></span><span class="row__desc" data-i18n="ch.clanCategoryD"></span></span>
+                <div class="row__control combo" data-combo data-source="categories">
+                  <input type="hidden" data-setting="channel.clanCategory" data-label="Catégorie des clans">
+                  <button class="combo__button" type="button"><span class="combo__value" data-i18n="ch.pickChannel"></span><span class="caret"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="savebar savebar--sticky" hidden>
+              <span class="savebar__dot" aria-hidden="true"></span>
+              <span class="savebar__text"></span>
+              <span class="savebar__detail"></span>
+              <button class="btn btn--ghost btn--sm" type="button" data-cancel data-i18n="c.cancel"></button>
+              <button class="btn btn--primary btn--sm" type="button" data-save data-i18n="c.save"></button>
+            </div>
+          </div>
+
+          <div class="stack">
+            <div class="group">
+              <div class="group__head"><span class="group__title" data-i18n="ch.permTitle"></span></div>
+              <table class="ptable">
+                <thead><tr>
+                  <th data-i18n="ch.permChannel"></th>
+                  <th class="c" data-i18n="ch.permView"></th>
+                  <th class="c" data-i18n="ch.permWrite"></th>
+                  <th class="c" data-i18n="ch.permManage"></th>
+                </tr></thead>
+                <tbody id="perm-body"><tr><td colspan="4"><span class="hint" data-i18n="c.loading"></span></td></tr></tbody>
+              </table>
+            </div>
+
+            <div class="group group--quiet">
+              <div class="group__head"><span class="group__title" data-i18n="ch.createdTitle"></span></div>
+              <div class="group__body"><p class="hint" data-i18n="ch.createdBody"></p></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================== RÔLES ======================
+           Deux colonnes : la hiérarchie de droite est l'avertissement
+           qui conditionne les quatre choix de gauche. Elle est courte,
+           donc elle prend la colonne mince.                          -->
+      <section class="section" data-section="roles" hidden>
+        <div class="section__head">
+          <div class="section__head-main">
+            <span class="section__group" data-i18n="d.config"></span>
+            <h1 class="section__title" data-i18n="s.roles">Rôles</h1>
+            <p class="section__lead" data-i18n="s.rolesD"></p>
+          </div>
+        </div>
+
+        <div class="cols">
+          <div class="stack">
+            <div class="group">
+              <div class="group__head"><span class="group__title" data-i18n="s.roles"></span><span class="group__meta mono">4</span></div>
+
+              <div class="row">
+                <span class="row__label"><span data-i18n="rl.organizer"></span><span class="row__desc" data-i18n="rl.organizerD"></span></span>
+                <div class="row__control combo" data-combo data-source="roles">
+                  <input type="hidden" data-setting="role.organizer" data-label="Organisateur">
+                  <button class="combo__button" type="button"><span class="combo__sigil">@</span><span class="combo__value" data-i18n="ch.pickChannel"></span><span class="caret"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+                </div>
+              </div>
+              <div class="row">
+                <span class="row__label"><span data-i18n="rl.queueNotify"></span><span class="row__desc" data-i18n="rl.queueNotifyD"></span></span>
+                <div class="row__control combo" data-combo data-source="roles">
+                  <input type="hidden" data-setting="role.queueNotify" data-label="Notification de queue">
+                  <button class="combo__button" type="button"><span class="combo__sigil">@</span><span class="combo__value" data-i18n="ch.pickChannel"></span><span class="caret"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+                </div>
+              </div>
+              <div class="row">
+                <span class="row__label"><span data-i18n="rl.clanLeader"></span><span class="row__desc" data-i18n="rl.clanLeaderD"></span></span>
+                <div class="row__control combo" data-combo data-source="roles">
+                  <input type="hidden" data-setting="role.clanLeader" data-label="Chef de clan">
+                  <button class="combo__button" type="button"><span class="combo__sigil">@</span><span class="combo__value" data-i18n="ch.pickChannel"></span><span class="caret"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+                </div>
+              </div>
+              <div class="row">
+                <span class="row__label"><span data-i18n="rl.clanTransfer"></span><span class="row__desc" data-i18n="rl.clanTransferD"></span></span>
+                <div class="row__control combo" data-combo data-source="roles">
+                  <input type="hidden" data-setting="role.clanTransfer" data-label="Transfert de clan">
+                  <button class="combo__button" type="button"><span class="combo__sigil">@</span><span class="combo__value" data-i18n="ch.pickChannel"></span><span class="caret"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></button>
+                </div>
+              </div>
+            </div>
+
+            <div class="savebar savebar--sticky" hidden>
+              <span class="savebar__dot" aria-hidden="true"></span>
+              <span class="savebar__text"></span>
+              <span class="savebar__detail"></span>
+              <button class="btn btn--ghost btn--sm" type="button" data-cancel data-i18n="c.cancel"></button>
+              <button class="btn btn--primary btn--sm" type="button" data-save data-i18n="c.save"></button>
+            </div>
+          </div>
+
+          <div class="group">
+            <div class="group__head"><span class="group__title" data-i18n="rl.hierarchyTitle"></span></div>
+            <div class="group__body">
+              <p class="hint" data-i18n="rl.hierarchyBody"></p>
+              <div class="hier" id="role-hierarchy"></div>
+              <div class="actions">
+                <a class="btn btn--sm" id="roles-link" href="#" target="_blank" rel="noopener" data-i18n="rl.openRoles"></a>
+                <button class="btn btn--ghost btn--sm" type="button" id="roles-recheck" data-i18n="rl.recheck"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================== MMR ======================
+           Deux colonnes justifiées : on règle à gauche, on voit l'effet
+           à droite, en direct. La simulation reste à l'écran.         -->
+      <section class="section" data-section="mmr" hidden>
+        <div class="section__head">
+          <div class="section__head-main">
+            <span class="section__group" data-i18n="d.config"></span>
+            <h1 class="section__title" data-i18n="s.mmr">MMR</h1>
+            <p class="section__lead" data-i18n="s.mmrD"></p>
+          </div>
+          <button class="btn btn--ghost" type="button" data-i18n="c.reset"></button>
+        </div>
+
+        <div class="cols cols--wide">
+          <div class="stack">
+
+            <div class="group">
+              <div class="group__head"><span class="group__title" data-i18n="mm.grpActivation"></span><span class="group__meta mono">3</span></div>
+              <div class="row row--inline row--tall">
+                <span class="row__label row__label--grow"><span data-i18n="mm.enable"></span><span class="row__desc" data-i18n="mm.enableD"></span></span>
+                <label class="switch"><input type="checkbox" checked data-setting="mmr.enabled" data-label="Système de MMR"><span class="state"></span><span class="track"></span></label>
+              </div>
+              <div class="row row--inline row--tall">
+                <span class="row__label row__label--grow"><span data-i18n="mm.mvp"></span><span class="row__desc" data-i18n="mm.mvpD"></span></span>
+                <label class="switch"><input type="checkbox" checked data-setting="mmr.mvpEnabled" data-label="Bonus MVP" data-controls="#row-mvp-bonus" data-name="Bonus MVP" data-name-i18n="mm.mvp"><span class="state"></span><span class="track"></span></label>
+              </div>
+              <div class="row row--inline row--tall">
+                <span class="row__label row__label--grow"><span data-i18n="mm.streak"></span><span class="row__desc" data-i18n="mm.streakD"></span></span>
+                <label class="switch"><input type="checkbox" data-setting="mmr.streakEnabled" data-label="Bonus de série" data-controls="#row-streak-bonus,#row-streak-req" data-name="Bonus de série" data-name-i18n="mm.streak"><span class="state"></span><span class="track"></span></label>
+              </div>
+            </div>
+
+            <div class="group">
+              <div class="group__head"><span class="group__title" data-i18n="mm.grpPoints"></span><span class="group__meta mono">6</span></div>
+
+              <div class="row">
+                <span class="row__label row__label--grow"><label for="f-start" data-i18n="mm.start"></label><span class="row__desc" data-i18n="mm.startD"></span></span>
+                <span class="bounds mono">0 – 5000</span>
+                <span class="field-num"><input class="field" id="f-start" type="number" value="1000" data-min="0" data-max="5000" data-setting="mmr.start" data-label="MMR de départ"><span class="unit" data-i18n="u.pts"></span></span>
+                <span class="error-msg" data-error-for="f-start" hidden></span>
+              </div>
+
+              <div class="row">
+                <span class="row__label row__label--grow"><label for="f-win" data-i18n="mm.win"></label><span class="row__desc" data-i18n="mm.winD"></span></span>
+                <span class="bounds mono">1 – 100</span>
+                <span class="field-num"><input class="field" id="f-win" type="number" value="25" data-min="1" data-max="100" data-setting="mmr.win" data-label="Points par victoire"><span class="unit" data-i18n="u.pts"></span></span>
+                <span class="error-msg" data-error-for="f-win" hidden></span>
+              </div>
+
+              <div class="row">
+                <span class="row__label row__label--grow"><label for="f-loss" data-i18n="mm.loss"></label><span class="row__desc" data-i18n="mm.lossD"></span></span>
+                <span class="bounds mono">-100 – 0</span>
+                <span class="field-num"><input class="field" id="f-loss" type="number" value="-18" data-min="-100" data-max="0" data-setting="mmr.loss" data-label="Points par défaite"><span class="unit" data-i18n="u.pts"></span></span>
+                <span class="error-msg" data-error-for="f-loss" hidden></span>
+              </div>
+
+              <div class="row row--sub" id="row-mvp-bonus">
+                <span class="row__label row__label--grow"><label for="f-mvp" data-i18n="mm.mvpBonus"></label><span class="row__desc" data-i18n="mm.mvpBonusD"></span><span class="row__desc row__desc--locked" data-locked-note hidden></span></span>
+                <span class="bounds mono">0 – 50</span>
+                <span class="field-num"><input class="field" id="f-mvp" type="number" value="10" data-min="0" data-max="50" data-setting="mmr.mvpBonus" data-label="Bonus MVP"><span class="unit" data-i18n="u.pts"></span></span>
+                <span class="error-msg" data-error-for="f-mvp" hidden></span>
+              </div>
+
+              <div class="row row--sub" id="row-streak-bonus">
+                <span class="row__label row__label--grow"><label for="f-streak" data-i18n="mm.streakBonus"></label><span class="row__desc" data-i18n="mm.streakBonusD"></span><span class="row__desc row__desc--locked" data-locked-note hidden></span></span>
+                <span class="bounds mono">0 – 50</span>
+                <span class="field-num"><input class="field" id="f-streak" type="number" value="5" data-min="0" data-max="50" data-setting="mmr.streakBonus" data-label="Bonus de série"><span class="unit" data-i18n="u.pts"></span></span>
+                <span class="error-msg" data-error-for="f-streak" hidden></span>
+              </div>
+
+              <div class="row row--sub" id="row-streak-req">
+                <span class="row__label row__label--grow"><label for="f-streakn" data-i18n="mm.streakRequired"></label><span class="row__desc" data-i18n="mm.streakRequiredD"></span><span class="row__desc row__desc--locked" data-locked-note hidden></span></span>
+                <span class="bounds mono">2 – 20</span>
+                <span class="field-num"><input class="field" id="f-streakn" type="number" value="3" data-min="2" data-max="20" data-setting="mmr.streakRequired" data-label="Série requise"><span class="unit" data-i18n="u.matches"></span></span>
+                <span class="error-msg" data-error-for="f-streakn" hidden></span>
+              </div>
+            </div>
+
+            <div class="group">
+              <div class="group__head"><span class="group__title" data-i18n="mm.grpDurations"></span><span class="group__meta mono">2</span></div>
+              <div class="row">
+                <span class="row__label row__label--grow"><label for="f-cvote" data-i18n="mm.captainVote"></label><span class="row__desc" data-i18n="mm.captainVoteD"></span></span>
+                <span class="bounds mono">15 – 300</span>
+                <span class="field-num"><input class="field" id="f-cvote" type="number" value="60" data-min="15" data-max="300" data-setting="mmr.captainVote" data-label="Vote des capitaines"><span class="unit" data-i18n="u.s"></span></span>
+                <span class="error-msg" data-error-for="f-cvote" hidden></span>
+              </div>
+              <div class="row">
+                <span class="row__label row__label--grow"><label for="f-rvote" data-i18n="mm.resultVote"></label><span class="row__desc" data-i18n="mm.resultVoteD"></span></span>
+                <span class="bounds mono">30 – 600</span>
+                <span class="field-num"><input class="field" id="f-rvote" type="number" value="120" data-min="30" data-max="600" data-setting="mmr.resultVote" data-label="Vote de résultat"><span class="unit" data-i18n="u.s"></span></span>
+                <span class="error-msg" data-error-for="f-rvote" hidden></span>
+              </div>
+            </div>
+
+            <div class="savebar savebar--sticky" hidden>
+              <span class="savebar__dot" aria-hidden="true"></span>
+              <span class="savebar__text"></span>
+              <span class="savebar__detail"></span>
+              <button class="btn btn--ghost btn--sm" type="button" data-cancel data-i18n="c.cancel"></button>
+              <button class="btn btn--primary btn--sm" type="button" data-save data-i18n="c.save"></button>
+            </div>
+          </div>
+
+          <div class="stack sticky-aside">
+            <div class="group">
+              <div class="group__head"><span class="group__title" data-i18n="mm.effectTitle"></span><span class="group__meta mono" data-i18n="mm.effectMeta"></span></div>
+              <div class="group__body">
+                <p class="hint" data-i18n="mm.effectLead"></p>
+                <div class="sim" id="mmr-sim"></div>
+                <div class="notice notice--warn" id="mmr-warn" hidden>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M12 3 2 20h20L12 3zM12 9v5M12 17.5v.01"/></svg>
+                  <span class="hint notice__text--warn" data-i18n="mm.ratioWarn"></span>
+                </div>
+              </div>
+            </div>
+
+            <div class="group group--quiet">
+              <div class="group__head"><span class="group__title" data-i18n="mm.resetTitle"></span></div>
+              <div class="group__body">
+                <p class="hint" data-i18n="mm.resetBody"></p>
+                <div class="actions">
+                  <button class="btn btn--danger btn--sm" type="button" id="mmr-reset">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg>
+                    <span data-i18n="mm.resetBtn"></span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================== QUEUE PAR DÉFAUT ======================
+           Le cœur du produit : deux colonnes, et l'aperçu vivant reste
+           collé au défilement pendant qu'on règle.                    -->
+      <section class="section" data-section="queue" hidden>
+        <div class="section__head">
+          <div class="section__head-main">
+            <span class="section__group" data-i18n="d.config"></span>
+            <h1 class="section__title" data-i18n="s.queue">Queue par défaut</h1>
+            <p class="section__lead" data-i18n="s.queueD"></p>
+          </div>
+          <button class="btn" type="button" id="q-save-preset">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M5 4h11l3 3v13H5z"/><path d="M8 4v5h7M8 20v-6h8v6"/></svg>
+            <span data-i18n="p.saveCurrent"></span>
+          </button>
+        </div>
+
+        <div class="cols cols--wide">
+          <div class="stack">
+
+            <div class="group">
+              <div class="group__head"><span class="group__title" data-i18n="q.grpIdentity"></span></div>
+              <div class="row">
+                <span class="row__label"><label for="q-name" data-i18n="q.name"></label></span>
+                <input class="field field--sans row__control" id="q-name" type="text" maxlength="64" value="Scrim 5v5" data-setting="queue.name" data-label="Nom de la queue">
+              </div>
+              <div class="row">
+                <span class="row__label"><label for="q-type" data-i18n="q.type"></label></span>
+                <select class="field field--sans field--w2" id="q-type" data-setting="queue.type" data-label="Type">
+                  <option value="scrim" data-i18n="q.typeScrim"></option>
+                  <option value="tournament" data-i18n="q.typeTournament"></option>
+                  <option value="league" data-i18n="q.typeLeague"></option>
+                  <option value="duel" data-i18n="q.typeDuel"></option>
+                </select>
+                <span class="row__label row__label--auto"><label for="q-session" data-i18n="q.session"></label></span>
+                <select class="field field--sans field--w2" id="q-session" data-setting="queue.session" data-label="Session">
+                  <option value="ondemand" data-i18n="q.sessionOnDemand"></option>
+                  <option value="scheduled" data-i18n="q.sessionScheduled"></option>
+                </select>
+              </div>
+              <div class="row row--sub" id="q-time-row">
+                <span class="row__label"><label for="q-time" data-i18n="q.time"></label><span class="row__desc" data-i18n="q.timeD"></span></span>
+                <input class="field field--w1" id="q-time" type="time" value="21:00" data-setting="queue.time" data-label="Heure d'ouverture">
+              </div>
+            </div>
+
+            <div class="group">
+              <div class="group__head"><span class="group__title" data-i18n="q.grpFormat"></span><span class="group__meta mono" id="q-required"></span></div>
+              <div class="row row--inline row--tall">
+                <span class="row__label row__label--grow" id="lbl-teams" data-i18n="q.teams"></span>
+                <span role="group" aria-labelledby="lbl-teams" class="segmented" id="seg-teams">
+                  <button type="button" aria-pressed="false">2</button>
+                  <button type="button" aria-pressed="false">3</button>
+                  <button type="button" aria-pressed="false">4</button>
+                  <button type="button" aria-pressed="false">5</button>
+                  <button type="button" aria-pressed="false">6</button>
+                </span>
+                <input type="hidden" id="q-teams" value="2" data-setting="queue.teams" data-label="Nombre d'équipes">
+              </div>
+              <div class="row row--inline row--tall">
+                <span class="row__label row__label--grow" id="lbl-players" data-i18n="q.players"></span>
+                <span role="group" aria-labelledby="lbl-players" class="segmented" id="seg-players">
+                  <button type="button" aria-pressed="false">1</button>
+                  <button type="button" aria-pressed="false">2</button>
+                  <button type="button" aria-pressed="false">3</button>
+                  <button type="button" aria-pressed="false">4</button>
+                  <button type="button" aria-pressed="false">5</button>
+                  <button type="button" aria-pressed="false">6</button>
+                </span>
+                <input type="hidden" id="q-players" value="5" data-setting="queue.players" data-label="Joueurs par équipe">
+              </div>
+            </div>
+
+            <div class="group">
+              <div class="group__head"><span class="group__title" data-i18n="q.grpTeams"></span></div>
+              <div id="q-teams-list"></div>
+            </div>
+
+            <div class="group">
+              <div class="group__head"><span class="group__title" data-i18n="q.grpRules"></span></div>
+              <div class="row row--inline row--tall">
+                <span class="row__label row__label--grow"><span data-i18n="q.captainVote"></span><span class="row__desc" data-i18n="q.captainVoteD"></span></span>
+                <label class="switch"><input type="checkbox" checked data-setting="queue.captainVote" data-label="Vote des capitaines"><span class="state"></span><span class="track"></span></label>
+              </div>
+              <div class="row row--inline row--tall">
+                <span class="row__label row__label--grow"><span data-i18n="q.password"></span><span class="row__desc" data-i18n="q.passwordD"></span></span>
+                <label class="switch"><input type="checkbox" data-setting="queue.password" data-label="Mot de passe"><span class="state"></span><span class="track"></span></label>
+              </div>
+            </div>
+
+            <div class="savebar savebar--sticky" hidden>
+              <span class="savebar__dot" aria-hidden="true"></span>
+              <span class="savebar__text"></span>
+              <span class="savebar__detail"></span>
+              <button class="btn btn--ghost btn--sm" type="button" data-cancel data-i18n="c.cancel"></button>
+              <button class="btn btn--primary btn--sm" type="button" data-save data-i18n="c.save"></button>
+            </div>
+          </div>
+
+          <div class="group sticky-aside">
+            <div class="group__head"><span class="group__title" data-i18n="q.previewTitle"></span></div>
+            <div class="group__body">
+              <div class="qprev">
+                <div class="qprev__name" id="q-prev-name"></div>
+                <div class="qprev__meta mono" id="q-prev-meta"></div>
+                <div class="qprev__teams" id="q-prev-teams"></div>
+                <div class="qprev__tags" id="q-prev-tags"></div>
+              </div>
+              <p class="hint" data-i18n="q.previewNote"></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================== PRESETS ======================
+           Une liste de dix lignes au maximum : une colonne à largeur de
+           lecture. Étalée sur 1440 px, elle deviendrait illisible.    -->
+      <section class="section" data-section="presets" hidden>
+        <div class="section__head">
+          <div class="section__head-main">
+            <span class="section__group" data-i18n="d.config"></span>
+            <h1 class="section__title" data-i18n="s.presets">Presets</h1>
+            <p class="section__lead" data-i18n="s.presetsD"></p>
+          </div>
+        </div>
+        <div class="one one--read">
+          <div class="group">
+            <div class="group__head"><span class="group__title" data-i18n="s.presets"></span><span class="group__meta mono" id="presets-count">0/10</span></div>
+            <div id="presets-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================== LOGS ======================
+           Dix lignes identiques : densité assumée, et deux colonnes de
+           lignes dès que la largeur le permet.                        -->
+      <section class="section" data-section="logs" hidden>
+        <div class="section__head">
+          <div class="section__head-main">
+            <span class="section__group" data-i18n="d.config"></span>
+            <h1 class="section__title" data-i18n="s.logs">Logs</h1>
+            <p class="section__lead" data-i18n="s.logsD"></p>
+          </div>
+        </div>
+
+        <div class="one one--wide">
+          <div class="group">
+            <div class="group__head"><span class="group__title" data-i18n="s.logs"></span><span class="group__meta mono" id="logs-count"></span></div>
+            <div class="rows--dense" id="logs-list"></div>
+          </div>
+
+          <div class="savebar savebar--sticky" hidden>
+            <span class="savebar__dot" aria-hidden="true"></span>
+            <span class="savebar__text"></span>
+            <span class="savebar__detail"></span>
+            <button class="btn btn--ghost btn--sm" type="button" data-cancel data-i18n="c.cancel"></button>
+            <button class="btn btn--primary btn--sm" type="button" data-save data-i18n="c.save"></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================== SÉCURITÉ ======================
+           Une colonne à largeur de lecture : trois décisions, chacune
+           suivie de ses réglages dépendants, décalés sous elle.       -->
+      <section class="section" data-section="securite" hidden>
+        <div class="section__head">
+          <div class="section__head-main">
+            <span class="section__group" data-i18n="d.config"></span>
+            <h1 class="section__title" data-i18n="s.security">Sécurité</h1>
+            <p class="section__lead" data-i18n="s.securityD"></p>
+          </div>
+        </div>
+
+        <div class="one one--read">
+          <div class="group">
+            <div class="group__head"><span class="group__title" data-i18n="s.security"></span><span class="group__meta mono">3</span></div>
+
+            <div class="row row--inline row--tall">
+              <span class="row__label row__label--grow"><span data-i18n="se.antilink"></span><span class="row__desc" data-i18n="se.antilinkD"></span></span>
+              <label class="switch"><input type="checkbox" data-setting="security.antilink" data-label="Anti-lien"><span class="state"></span><span class="track"></span></label>
+            </div>
+
+            <div class="row row--inline row--tall">
+              <span class="row__label row__label--grow"><span data-i18n="se.autoclean"></span><span class="row__desc" data-i18n="se.autocleanD"></span></span>
+              <label class="switch"><input type="checkbox" data-setting="security.autoclean" data-label="Nettoyage auto" data-controls="#row-clean-delay" data-name="Nettoyage automatique" data-name-i18n="se.autoclean"><span class="state"></span><span class="track"></span></label>
+            </div>
+            <div class="row row--sub" id="row-clean-delay">
+              <span class="row__label row__label--grow"><label for="f-clean" data-i18n="se.autocleanDelay"></label><span class="row__desc" data-i18n="se.autocleanDelayD"></span><span class="row__desc row__desc--locked" data-locked-note hidden></span></span>
+              <span class="bounds mono">1 – 1440</span>
+              <span class="field-num"><input class="field" id="f-clean" type="number" value="10" data-min="1" data-max="1440" data-setting="security.autocleanDelay" data-label="Délai de nettoyage"><span class="unit" data-i18n="u.min"></span></span>
+              <span class="error-msg" data-error-for="f-clean" hidden></span>
+            </div>
+
+            <div class="row row--inline row--tall">
+              <span class="row__label row__label--grow"><span data-i18n="se.antiraid"></span><span class="row__desc" data-i18n="se.antiraidD"></span></span>
+              <label class="switch"><input type="checkbox" data-setting="security.antiraid" data-label="Anti-raid" data-controls="#row-raid-n,#row-raid-w,#row-raid-a" data-name="Anti-raid" data-name-i18n="se.antiraid"><span class="state"></span><span class="track"></span></label>
+            </div>
+            <div class="row row--sub" id="row-raid-n">
+              <span class="row__label row__label--grow"><label for="f-raidn" data-i18n="se.threshold"></label><span class="row__desc" data-i18n="se.thresholdD"></span><span class="row__desc row__desc--locked" data-locked-note hidden></span></span>
+              <span class="bounds mono">2 – 100</span>
+              <span class="field-num"><input class="field" id="f-raidn" type="number" value="10" data-min="2" data-max="100" data-setting="security.raidThreshold" data-label="Seuil d'arrivées"><span class="unit">×</span></span>
+              <span class="error-msg" data-error-for="f-raidn" hidden></span>
+            </div>
+            <div class="row row--sub" id="row-raid-w">
+              <span class="row__label row__label--grow"><label for="f-raidw" data-i18n="se.window"></label><span class="row__desc" data-i18n="se.windowD"></span><span class="row__desc row__desc--locked" data-locked-note hidden></span></span>
+              <span class="bounds mono">5 – 600</span>
+              <span class="field-num"><input class="field" id="f-raidw" type="number" value="30" data-min="5" data-max="600" data-setting="security.raidWindow" data-label="Fenêtre d'observation"><span class="unit" data-i18n="u.s"></span></span>
+              <span class="error-msg" data-error-for="f-raidw" hidden></span>
+            </div>
+            <div class="row row--sub" id="row-raid-a">
+              <span class="row__label row__label--grow"><label for="f-raida" data-i18n="se.action"></label><span class="row__desc" data-i18n="se.actionD"></span><span class="row__desc row__desc--locked" data-locked-note hidden></span></span>
+              <select class="field field--sans field--w3" id="f-raida" data-setting="security.raidAction" data-label="Action">
+                <option value="alert" data-i18n="se.actAlert"></option>
+                <option value="timeout" data-i18n="se.actTimeout"></option>
+                <option value="kick" data-i18n="se.actKick"></option>
+                <option value="ban" data-i18n="se.actBan"></option>
+              </select>
+            </div>
+          </div>
+
+          <div class="savebar savebar--sticky" hidden>
+            <span class="savebar__dot" aria-hidden="true"></span>
+            <span class="savebar__text"></span>
+            <span class="savebar__detail"></span>
+            <button class="btn btn--ghost btn--sm" type="button" data-cancel data-i18n="c.cancel"></button>
+            <button class="btn btn--primary btn--sm" type="button" data-save data-i18n="c.save"></button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ====================== DIAGNOSTIC ======================
+           Un rapport : une colonne, largeur de lecture. Ce n'est pas un
+           écran de réglage, et il ne porte pas de barre
+           d'enregistrement.                                           -->
+      <section class="section" data-section="diagnostic" hidden>
+        <div class="section__head">
+          <div class="section__head-main">
+            <span class="section__group" data-i18n="d.tools"></span>
+            <h1 class="section__title" data-i18n="d.diagnostic">Diagnostic</h1>
+            <p class="section__lead" data-i18n="d.diagnosticD"></p>
+          </div>
+          <button class="btn" type="button" id="diag-recheck" data-i18n="rl.recheck"></button>
+        </div>
+        <div class="one one--read">
+          <div class="group">
+            <div class="group__head"><span class="group__title" data-i18n="st.permTitle"></span></div>
+            <div id="diag-list"><div class="group__body"><span class="hint" data-i18n="c.loading"></span></div></div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script src="assets/js/config.js?v=202610101502"></script>
+<script src="assets/js/lang/fr.js?v=202610101502"></script>
+<script src="assets/js/lang/en.js?v=202610101502"></script>
+<script src="assets/js/lang/es.js?v=202610101502"></script>
+<script src="assets/js/lang/de.js?v=202610101502"></script>
+<script src="assets/js/lang/ko.js?v=202610101502"></script>
+<script src="assets/js/app.js?v=202610101502"></script>
+<script src="assets/js/page-dashboard.js?v=202610101502"></script>
+</body>
+</html>

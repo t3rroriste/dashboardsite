@@ -8,7 +8,12 @@
                              missingPermissions:[…], presets:[…],
                              settings:{ "mmr.start":1000, … } }
      PATCH /guilds/{id}/settings  <- { "clé": "valeur", … }
-   Sans API, la page reste navigable et affiche ses états vides.          */
+   Sans API, la page reste navigable et affiche ses états vides.
+
+   Aucune valeur de style dans ce fichier : tout passe par une classe de
+   app.css. Les seules propriétés écrites en JS sont des MESURES
+   (hauteur et position de l'indicateur du rail, couleur d'équipe choisie
+   par l'utilisateur), jamais des choix de design.                       */
 (function () {
   'use strict';
   var t = CYQ.t, esc = CYQ.esc, icon = CYQ.icon;
@@ -19,6 +24,14 @@
 
   var $ = function (s, r) { return (r || document).querySelector(s); };
   var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  /* Les durées du mouvement vivent dans le :root de app.css. On les relit
+     ici plutôt que de les recopier : une seule source de vérité. */
+  function ms(name, dflt) {
+    var v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+    var n = parseFloat(v);
+    return isNaN(n) ? dflt : (v.indexOf('ms') !== -1 ? n : n * 1000);
+  }
 
   /* ---------------------------------------------------- rendu synchrone --
      Ces blocs doivent exister avant que app.js ne câble la page.        */
@@ -32,11 +45,11 @@
       return '<div class="row">' +
         '<span class="row__label"><span data-i18n="lo.' + k + '"></span>' +
           '<span class="row__desc mono">log.' + k + '</span></span>' +
-        '<div class="row__control" style="display:flex;align-items:center;gap:10px">' +
-          '<div class="combo" data-combo data-source="channels" style="flex:1 1 auto">' +
+        '<div class="row__control log-control">' +
+          '<div class="combo" data-combo data-source="channels">' +
             '<input type="hidden" data-setting="log.' + k + '.channel" data-label="' + k + '">' +
-            '<button class="combo__button" type="button"><span style="color:var(--fg-3)">#</span>' +
-            '<span style="flex:1 1 auto" data-i18n="ch.pickChannel"></span>' +
+            '<button class="combo__button" type="button"><span class="combo__sigil">#</span>' +
+            '<span class="combo__value" data-i18n="ch.pickChannel"></span>' +
             '<span class="caret">' + icon('caret', 12) + '</span></button>' +
           '</div>' +
           '<label class="switch"><input type="checkbox" data-setting="log.' + k + '.enabled" ' +
@@ -54,26 +67,26 @@
     for (var i = 0; i < 6; i++) {
       var c = TEAM_COLORS[i];
       html += '<div class="row" data-team="' + i + '"' + (i >= 2 ? ' hidden' : '') + '>' +
-        '<input class="field field--sans" type="text" maxlength="32" value="Équipe ' + (i + 1) + '" ' +
+        '<input class="field field--sans field--w4" type="text" maxlength="32" value="Équipe ' + (i + 1) + '" ' +
           'data-setting="queue.team' + i + '.name" data-label="Équipe ' + (i + 1) + '" ' +
-          'style="width:210px" aria-label="' + esc(t('q.teamName', { n: i + 1 })) + '">' +
-        '<div style="position:relative">' +
+          'aria-label="' + esc(t('q.teamName', { n: i + 1 })) + '">' +
+        '<div class="swatch-wrap">' +
           '<button class="swatch-btn" type="button" data-color-open="' + i + '" aria-expanded="false" ' +
             'aria-label="' + esc(t('q.color', { n: i + 1 })) + '">' +
             '<span class="swatch" style="background:' + c + '"></span>' +
             '<span class="mono">' + c + '</span></button>' +
           '<input type="hidden" value="' + c + '" data-setting="queue.team' + i + '.color" ' +
             'data-label="Couleur ' + (i + 1) + '">' +
-          '<div class="combo__panel" data-color-panel="' + i + '" style="width:216px;left:0;right:auto;padding:10px;top:36px">' +
-            '<div class="mono" style="font-size:9.5px;letter-spacing:.1em;color:var(--fg-3);margin-bottom:8px" data-i18n="q.palette"></div>' +
+          '<div class="combo__panel color-panel" data-color-panel="' + i + '">' +
+            '<div class="minilabel" data-i18n="q.palette"></div>' +
             '<div class="palette">' + TEAM_COLORS.map(function (col) {
               return '<button type="button" style="background:' + col + '" data-pick-color="' + col + '" ' +
                 'aria-label="' + col + '" aria-pressed="' + (col === c) + '"></button>';
             }).join('') + '</div>' +
-            '<p class="hint" style="margin-top:8px;font-size:10.5px" data-i18n="q.colorNote"></p>' +
+            '<p class="hint" data-i18n="q.colorNote"></p>' +
           '</div>' +
         '</div>' +
-        '<span style="flex:1 1 auto"></span>' +
+        '<span class="spacer"></span>' +
         '<span class="team-pill" style="--team:' + c + '" data-team-pill="' + i + '">Équipe ' + (i + 1) + '</span>' +
       '</div>';
     }
@@ -89,13 +102,14 @@
       var open = e.target.closest('[data-color-open]');
       $$('[data-color-panel]').forEach(function (p) {
         if (!open || p.getAttribute('data-color-panel') !== open.getAttribute('data-color-open')) {
-          p.style.display = 'none';
+          p.removeAttribute('data-open');
         }
       });
       if (open) {
         var panel = $('[data-color-panel="' + open.getAttribute('data-color-open') + '"]');
-        var isOpen = panel.style.display === 'block';
-        panel.style.display = isOpen ? 'none' : 'block';
+        var isOpen = panel.hasAttribute('data-open');
+        if (isOpen) panel.removeAttribute('data-open');
+        else panel.setAttribute('data-open', 'true');
         open.setAttribute('aria-expanded', String(!isOpen));
       }
       var pick = e.target.closest('[data-pick-color]');
@@ -110,7 +124,7 @@
           b.setAttribute('aria-pressed', String(b === pick));
         });
         $('[data-team-pill="' + idx + '"]').style.setProperty('--team', col);
-        $('[data-color-panel="' + idx + '"]').style.display = 'none';
+        $('[data-color-panel="' + idx + '"]').removeAttribute('data-open');
         row.dispatchEvent(new CustomEvent('cyq:change', { bubbles: true }));
         renderQueuePreview();
       }
@@ -167,10 +181,9 @@
           if (!row) continue;
           var tn = $('input[type="text"]', row).value;
           var col = $('input[type="hidden"]', row).value;
-          out += '<div style="display:flex;align-items:center;gap:8px;height:24px;padding:0 8px;border-radius:2px;' +
-            'border-left:2px solid ' + esc(col) + ';background:color-mix(in srgb,' + esc(col) + ' 13%,transparent)">' +
-            '<span style="flex:1 1 auto;font:500 12px var(--sans)">' + esc(tn) + '</span>' +
-            '<span class="mono" style="font-size:11px;color:var(--fg-3)">0/' + players + '</span></div>';
+          out += '<div class="qteam" style="--team:' + esc(col) + '">' +
+            '<span class="qteam__name">' + esc(tn) + '</span>' +
+            '<span class="qteam__slots mono">0/' + players + '</span></div>';
         }
         tl.innerHTML = out;
       }
@@ -212,13 +225,13 @@
       var v = el ? Number(el.value) : NaN;
       return isNaN(v) ? dflt : v;
     }
-    function line(label, delta, total, color) {
-      return '<div style="display:flex;align-items:center;gap:9px;padding:6px 0;border-bottom:1px solid var(--line)">' +
-        '<span class="mono" style="font-size:11.5px;color:var(--fg-2);width:120px">' + esc(label) + '</span>' +
-        (delta === null ? '' : '<span class="mono" style="font-size:11.5px;color:' + color + '">' +
+    function line(label, delta, total, dir) {
+      return '<div class="simrow">' +
+        '<span class="simrow__label">' + esc(label) + '</span>' +
+        (delta === null ? '' : '<span class="simrow__delta simrow__delta--' + dir + '">' +
           (delta > 0 ? '+' : '') + delta + '</span>') +
-        '<span style="flex:1 1 auto"></span>' +
-        '<span class="mono" style="font-size:13px">' + total + '</span></div>';
+        '<span class="spacer"></span>' +
+        '<span class="simrow__total">' + total + '</span></div>';
     }
     function renderSim() {
       var host = $('#mmr-sim'); if (!host) return;
@@ -227,23 +240,45 @@
       var mvp = mvpOn ? num('#f-mvp', 0) : 0;
       var a = start, b = a + win, c = b + win + mvp, d = c + loss;
       var ratio = loss === 0 ? null : Math.abs(win / loss);
+      var bad = ratio === null || ratio > 5;
       host.innerHTML =
-        line(t('mm.first'), null, a) +
-        line(t('mm.aWin'), win, b, 'var(--ok)') +
-        line(t('mm.aWinMvp'), win + mvp, c, 'var(--ok)') +
-        line(t('mm.aLoss'), loss, d, 'var(--err)') +
-        '<div style="display:flex;align-items:center;gap:9px;padding:6px 0">' +
-          '<span class="mono" style="font-size:11.5px;color:var(--fg-2);width:120px">' + esc(t('mm.ratio')) + '</span>' +
-          '<span style="flex:1 1 auto"></span><span class="mono" style="font-size:13px;color:' +
-          (ratio === null || ratio > 5 ? 'var(--warn)' : 'var(--fg)') + '">' +
+        line(t('mm.first'), null, a, 'up') +
+        line(t('mm.aWin'), win, b, 'up') +
+        line(t('mm.aWinMvp'), win + mvp, c, 'up') +
+        line(t('mm.aLoss'), loss, d, 'down') +
+        '<div class="simrow simrow--total">' +
+          '<span class="simrow__label">' + esc(t('mm.ratio')) + '</span>' +
+          '<span class="spacer"></span>' +
+          '<span class="simrow__total' + (bad ? ' simrow__total--warn' : '') + '">' +
           (ratio === null ? '∞' : ratio.toFixed(1) + ' : 1') + '</span></div>';
-      var w = $('#mmr-warn'); if (w) w.hidden = !(ratio === null || ratio > 5);
+      var w = $('#mmr-warn'); if (w) w.hidden = !bad;
     }
     ['#f-start', '#f-win', '#f-loss', '#f-mvp'].forEach(function (s) {
       var el = $(s); if (el) el.addEventListener('input', renderSim);
     });
     var mvpSw = $('[data-setting="mmr.mvpEnabled"]');
     if (mvpSw) mvpSw.addEventListener('change', renderSim);
+
+    /* --- nom traduit de l'interrupteur qui verrouille une ligne -----------
+       app.js écrit « Inactif : l'interrupteur « X » est désactivé » avec
+       la valeur brute de data-name, qui est en français dans le HTML.
+       On pose la traduction dans l'attribut ET dans la note, après son
+       repeint, pour qu'aucune chaîne visible n'échappe à l'i18n. */
+    function paintLockedNames() {
+      $$('[data-controls][data-name-i18n]').forEach(function (cb) {
+        var name = t(cb.getAttribute('data-name-i18n'));
+        cb.setAttribute('data-name', name);
+        (cb.getAttribute('data-controls') || '').split(',').forEach(function (sel) {
+          $$(sel.trim()).forEach(function (row) {
+            var note = $('[data-locked-note]', row);
+            if (note && !note.hidden) note.textContent = t('mm.lockedBy', { name: name });
+          });
+        });
+      });
+    }
+    $$('[data-controls][data-name-i18n]').forEach(function (cb) {
+      cb.addEventListener('change', function () { setTimeout(paintLockedNames, 0); });
+    });
 
     /* --- compteur de logs --- */
     function countLogs() {
@@ -264,10 +299,9 @@
       if (!presets.length) {
         host.innerHTML = '<div class="empty"><h3>' + esc(t('p.emptyTitle')) + '</h3>' +
           '<p>' + esc(t('p.emptyBody')) + '</p>' +
-          '<div style="border:1px dashed var(--line-2);border-radius:2px;padding:9px 10px;margin-bottom:12px">' +
-            '<span class="mono" style="font-size:10.5px;color:var(--fg-3);display:block;margin-bottom:5px">' +
-            esc(t('p.willSave')).toUpperCase() + '</span>' +
-            '<span class="mono" style="font-size:11px;color:var(--fg-2)" id="p-summary"></span></div>' +
+          '<div class="willsave">' +
+            '<span class="minilabel">' + esc(t('p.willSave')) + '</span>' +
+            '<span class="willsave__val" id="p-summary"></span></div>' +
           '<button class="btn btn--primary" type="button">' + esc(t('p.saveCurrent')) + '</button></div>';
         var sum = $('#p-summary');
         if (sum) {
@@ -280,9 +314,9 @@
       host.innerHTML = presets.map(function (p, i) {
         return '<div class="row row--inline">' +
           '<span class="row__label row__label--grow">' + esc(p.name) + '</span>' +
-          '<span class="mono" style="font-size:10.5px;color:var(--fg-3)">' +
+          '<span class="preset-meta mono">' +
             esc((p.teams || '?') + ' × ' + (p.players || '?')) + '</span>' +
-          (i === 0 ? '<span class="mono" style="font-size:10.5px;color:var(--fg-3)">' + esc(t('p.active')) + '</span>'
+          (i === 0 ? '<span class="preset-meta mono">' + esc(t('p.active')) + '</span>'
                    : '<button class="btn btn--ghost btn--sm" type="button">' + esc(t('p.load')) + '</button>') +
           '</div>';
       }).join('');
@@ -290,10 +324,10 @@
 
     /* --- table des permissions --- */
     function permIcon(v) {
-      if (v === true)  return '<span style="color:var(--ok)">' + icon('check', 13) + '</span>';
-      if (v === false) return '<span style="color:var(--err)">' + icon('x', 13) + '</span>';
-      if (v === 'warn') return '<span style="color:var(--warn)">' + icon('warn', 13) + '</span>';
-      return '<span class="mono" style="color:var(--fg-3)">—</span>';
+      if (v === true)  return '<span class="pico--ok">' + icon('check', 13) + '</span>';
+      if (v === false) return '<span class="pico--err">' + icon('x', 13) + '</span>';
+      if (v === 'warn') return '<span class="pico--warn">' + icon('warn', 13) + '</span>';
+      return '<span class="pico--none">—</span>';
     }
     function renderPerms(rows) {
       var body = $('#perm-body'); if (!body) return;
@@ -304,8 +338,8 @@
       }
       body.innerHTML = rows.map(function (r) {
         var cls = r.state === 'deleted' ? ' class="is-err"' : r.state === 'warn' ? ' class="is-warn"' : '';
-        return '<tr' + cls + '><td><span style="color:var(--fg-3)">#</span>' + esc(r.channel) +
-          (r.state === 'deleted' ? ' <span style="color:var(--fg-3)">(' + esc(t('ch.deleted')) + ')</span>' : '') +
+        return '<tr' + cls + '><td><span class="sigil">#</span>' + esc(r.channel) +
+          (r.state === 'deleted' ? ' <span class="faint">(' + esc(t('ch.deleted')) + ')</span>' : '') +
           '</td><td class="c">' + permIcon(r.view) + '</td><td class="c">' + permIcon(r.write) +
           '</td><td class="c">' + permIcon(r.manage) + '</td></tr>';
       }).join('');
@@ -314,20 +348,229 @@
     /* --- hiérarchie des rôles --- */
     function renderHierarchy(roles, botPos) {
       var host = $('#role-hierarchy'); if (!host) return;
-      if (!roles || !roles.length) { host.innerHTML = '<div style="padding:10px"><span class="hint">' +
-        esc(CYQ.api.configured ? t('c.loading') : t('d.noApi')) + '</span></div>'; return; }
+      if (!roles || !roles.length) {
+        host.innerHTML = '<div class="hier__pad"><span class="hint">' +
+          esc(CYQ.api.configured ? t('c.loading') : t('d.noApi')) + '</span></div>';
+        return;
+      }
       host.innerHTML = roles.slice(0, 6).map(function (r, i) {
         var isBot = r.isBot;
         var above = botPos != null && r.position > botPos && !isBot;
-        return '<div style="display:flex;align-items:center;gap:8px;height:26px;padding:0 9px;' +
-          'border-bottom:1px solid var(--line)' + (above ? ';background:var(--warn-bg)' : '') + '">' +
-          '<span class="mono" style="font-size:11px;flex:1 1 auto' + (above ? ';color:var(--warn)' : '') + '">@' +
-          esc(r.name) + '</span>' +
-          (above ? '<span style="color:var(--warn)">' + icon('warn', 11) + '</span>' : '') +
-          (isBot ? '<span class="mono" style="font-size:9.5px;color:var(--fg-3)">' + esc(t('rl.theBot')) + '</span>' : '') +
+        return '<div class="hier__row' + (above ? ' is-above' : '') + '">' +
+          '<span class="hier__n">' + (i + 1) + '</span>' +
+          '<span class="hier__name' + (above ? ' hier__name--above' : '') + '">@' + esc(r.name) + '</span>' +
+          (above ? '<span class="pico--warn">' + icon('warn', 11) + '</span>' : '') +
+          (isBot ? '<span class="hier__tag">' + esc(t('rl.theBot')) + '</span>' : '') +
           '</div>';
       }).join('');
     }
+
+    /* ===================================================================
+       LE RAIL : un indicateur unique qui glisse
+       Un seul élément, posé en absolu, jamais recréé — c'est pour ça
+       qu'il ne clignote pas. Tant que .is-ready n'est pas posée, il est
+       invisible ET sans transition : la première mise en place ne
+       s'anime donc pas.
+       =================================================================== */
+
+    var nav = $('.side__nav');
+    var mark = $('.side__mark');
+    var navlinks = $$('.navlink[data-goto]');
+
+    function activeLink() {
+      return navlinks.filter(function (l) { return l.hasAttribute('aria-current'); })[0] || navlinks[0];
+    }
+    function markTo(link) {
+      if (!mark || !link) return;
+      // Deux mesures, pas deux choix de design : on suit l'entrée.
+      mark.style.height = link.offsetHeight + 'px';
+      mark.style.transform = 'translateY(' + link.offsetTop + 'px)';
+    }
+    function placeMark() { markTo(activeLink()); }
+
+    if (nav && mark && navlinks.length) {
+      placeMark();
+      requestAnimationFrame(function () { nav.classList.add('is-ready'); });
+      window.addEventListener('resize', placeMark);
+      document.addEventListener('cyq:lang', function () { setTimeout(placeMark, 0); });
+    }
+
+    /* ===================================================================
+       LE CHANGEMENT DE SECTION
+       On n'remplace pas le routeur de app.js : on l'enveloppe. Le clic
+       est capté avant que son propre gestionnaire ne s'exécute, on joue
+       la sortie, puis on lui passe la main (CYQ.showSection fait le
+       hidden, aria-current, le fil d'Ariane, le focus, le défilement et
+       la fermeture du tiroir), puis on joue l'entrée.
+
+       Budget : sortie 70 ms + décalage 3 × 28 ms + entrée 200 ms,
+       soit 354 ms du clic au dernier bloc posé. Seuls transform et
+       opacity sont animés : jamais la mise en page.
+       =================================================================== */
+
+    var REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var T_LEAVE = ms('--t-leave', 70);
+    var MAX_STAG = 3;
+
+    function visibleSection() {
+      return $$('[data-section]').filter(function (s) { return !s.hidden; })[0] || null;
+    }
+
+    /* Les blocs de premier niveau de la section. Une .stack est un
+       conteneur, pas un bloc : on prend ses enfants. La barre
+       d'enregistrement est écartée — sous 900 px elle est en position
+       fixed, et un transform sur un ancêtre la décrocherait. */
+    function blocksOf(section) {
+      var out = [];
+      Array.prototype.forEach.call(section.children, function (child) {
+        if (child.classList.contains('section__head')) { out.push(child); return; }
+        if (child.classList.contains('cols') || child.classList.contains('one')) {
+          Array.prototype.forEach.call(child.children, function (k) {
+            if (k.classList.contains('savebar')) return;
+            if (k.classList.contains('stack')) {
+              Array.prototype.forEach.call(k.children, function (c) {
+                if (!c.classList.contains('savebar')) out.push(c);
+              });
+            } else out.push(k);
+          });
+        }
+      });
+      return out;
+    }
+
+    function cleanBlocks(section) {
+      $$('.blk-in', section).forEach(function (b) {
+        b.classList.remove('blk-in', 'is-on', 'blk-in--d1', 'blk-in--d2', 'blk-in--d3');
+      });
+    }
+
+    function playEnter(section) {
+      if (!section) return;
+      cleanBlocks(section);
+      if (REDUCE.matches) return;
+      var blocks = blocksOf(section);
+      if (!blocks.length) return;
+      blocks.forEach(function (b, i) {
+        var d = Math.min(i, MAX_STAG);
+        b.classList.add('blk-in');
+        if (d) b.classList.add('blk-in--d' + d);
+      });
+      // Un calcul forcé plutôt qu'un requestAnimationFrame : l'état de
+      // départ est posé tout de suite, donc la transition démarre dans
+      // la même image et on ne perd pas 16 ms au passage.
+      void blocks[0].offsetHeight;
+      blocks.forEach(function (b) { b.classList.add('is-on'); });
+      clearTimeout(section._cyqAnim);
+      section._cyqAnim = setTimeout(function () { cleanBlocks(section); },
+        MAX_STAG * ms('--t-stag', 28) + ms('--t-enter', 200) + 40);
+    }
+
+    function playExit(section, done) {
+      if (!section || REDUCE.matches) { done(); return; }
+      section.classList.add('is-leaving');
+      setTimeout(function () { section.classList.remove('is-leaving'); done(); }, T_LEAVE);
+    }
+
+    /* Le clic est capté en phase de capture, donc avant le gestionnaire
+       que app.js a posé sur le lien. On arrête là sa propagation : c'est
+       aussi ce qui ferme les menus flottants d'ordinaire, alors on le
+       fait nous-mêmes. */
+    function closePopovers() {
+      $$('[data-open="true"]').forEach(function (el) { el.removeAttribute('data-open'); });
+      $$('[aria-expanded="true"]').forEach(function (b) {
+        if (!b.hasAttribute('data-drawer-open')) b.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    var switching = false;
+
+    if (nav && typeof CYQ.showSection === 'function') {
+      nav.addEventListener('click', function (e) {
+        var link = e.target.closest ? e.target.closest('.navlink[data-goto]') : null;
+        if (!link) return;
+        e.preventDefault();
+        e.stopPropagation();
+        closePopovers();
+
+        var id = link.getAttribute('data-goto');
+        var cur = visibleSection();
+        if (switching) {   // un changement est déjà en vol : on coupe court
+          switching = false;
+          if (cur) cur.classList.remove('is-leaving');
+          markTo(link);
+          CYQ.showSection(id, true, true);
+          playEnter($('[data-section="' + id + '"]'));
+          return;
+        }
+        if (cur && cur.getAttribute('data-section') === id) {
+          if (window.innerWidth <= 900 && CYQ.closeDrawer) CYQ.closeDrawer();
+          return;
+        }
+        // L'indicateur part tout de suite : il glisse PENDANT la
+        // transition, pas après.
+        markTo(link);
+        switching = true;
+        playExit(cur, function () {
+          switching = false;
+          CYQ.showSection(id, true, true);
+          playEnter($('[data-section="' + id + '"]'));
+        });
+      }, true);
+
+      // Retour / avance du navigateur : app.js a déjà basculé la section
+      // quand on arrive ici ; il reste l'entrée à jouer et l'indicateur
+      // à déplacer.
+      window.addEventListener('popstate', function () {
+        placeMark();
+        playEnter(visibleSection());
+      });
+    }
+
+    /* ===================================================================
+       LA PASTILLE DE MODIFICATION NON ENREGISTRÉE
+       app.js émet cyq:dirty avec le nombre de champs modifiés, mais
+       seulement tant qu'il en reste au moins un : l'événement ne dit
+       jamais « c'est revenu propre ». Le signal fiable, c'est la barre
+       d'enregistrement elle-même — masquée, ou passée en savebar--ok
+       après un enregistrement réussi. On observe donc les deux.
+       =================================================================== */
+
+    (function wireDirty() {
+      var byId = {};
+      navlinks.forEach(function (l) { byId[l.getAttribute('data-goto')] = l; });
+
+      $$('[data-section]').forEach(function (section) {
+        var bar = $('.savebar', section);
+        var link = byId[section.getAttribute('data-section')];
+        if (!bar || !link) return;
+
+        var flag = document.createElement('span');
+        flag.className = 'navlink__dirty';
+        flag.hidden = true;
+        flag.innerHTML = '<i aria-hidden="true"></i><span data-dirty-n></span><span class="sr-only"></span>';
+        link.appendChild(flag);
+        var nEl = $('[data-dirty-n]', flag);
+        var srEl = $('.sr-only', flag);
+        var last = 0;
+
+        function paint(n) {
+          if (typeof n === 'number' && n > 0) last = n;
+          var clean = bar.hidden || bar.classList.contains('savebar--ok');
+          link.classList.toggle('is-dirty', !clean);
+          flag.hidden = clean;
+          if (!clean) {
+            nEl.textContent = last || '';
+            srEl.textContent = t('d.unsaved');
+          }
+        }
+
+        section.addEventListener('cyq:dirty', function (e) { paint(e.detail); });
+        new MutationObserver(function () { paint(); })
+          .observe(bar, { attributes: true, attributeFilter: ['hidden', 'class'] });
+        document.addEventListener('cyq:lang', function () { paint(); });
+        paint();
+      });
+    })();
 
     /* --- chargement --- */
     function fill(settings) {
@@ -357,10 +600,12 @@
         document.title = (g.name ? g.name + ' — ' : '') + 'CreateYourQueue';
         $('#g-members').textContent = g.memberCount == null ? '—' : Number(g.memberCount).toLocaleString(CYQ.lang);
         if (g.iconUrl) {
-          $('#g-icon').outerHTML = '<img class="gicon" id="g-icon" src="' + esc(g.iconUrl) +
-            '" alt="" width="32" height="32" style="width:32px;height:32px">';
+          $('#g-icon').outerHTML = '<img class="gicon gicon--sm" id="g-icon" src="' + esc(g.iconUrl) +
+            '" alt="" width="32" height="32">';
         }
         if (g.me && g.me.name) $('#me-name').textContent = g.me.name;
+        var od = $('#open-discord');
+        if (od && g.id) od.setAttribute('href', 'https://discord.com/channels/' + encodeURIComponent(g.id));
         var rl = $('#roles-link');
         if (rl && g.id) rl.setAttribute('href', 'https://discord.com/channels/' + encodeURIComponent(g.id));
 
@@ -379,6 +624,7 @@
         if (warn) warn.hidden = !(g.missingPermissions && g.missingPermissions.length);
 
         syncFormat(); renderSim(); countLogs(); renderQueuePreview();
+        placeMark();
       }).catch(function (err) {
         if (err.code === 'UNAUTHORIZED') { location.href = CYQ.loginUrl() || 'index.html'; return; }
         $('#noapi').hidden = false;
@@ -388,10 +634,12 @@
       });
     }
 
-    syncFormat(); renderSim(); countLogs(); renderQueuePreview();
+    syncFormat(); renderSim(); countLogs(); renderQueuePreview(); paintLockedNames();
     load();
+    // Première section : elle arrive comme les suivantes, pas d'un bloc.
+    playEnter(visibleSection());
     document.addEventListener('cyq:lang', function () {
-      syncFormat(); renderSim(); countLogs(); renderQueuePreview();
+      syncFormat(); renderSim(); countLogs(); renderQueuePreview(); paintLockedNames();
     });
   });
 })();

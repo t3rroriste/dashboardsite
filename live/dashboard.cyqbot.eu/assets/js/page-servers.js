@@ -21,10 +21,10 @@
   function skeleton() {
     var out = '';
     for (var i = 0; i < 4; i++) {
-      out += '<div class="grow"><span class="sk sk--pulse" style="width:34px;height:34px;border-radius:4px"></span>' +
-        '<span style="flex:1 1 auto"><span class="sk sk--pulse" style="width:44%;margin-bottom:6px"></span>' +
-        '<span class="sk sk--pulse" style="width:28%;height:7px"></span></span>' +
-        '<span class="sk sk--pulse" style="width:60px"></span></div>';
+      out += '<div class="grow"><span class="sk sk--pulse sk--sq"></span>' +
+        '<span class="fill"><span class="sk sk--pulse sk--w44"></span>' +
+        '<span class="sk sk--pulse sk--w28"></span></span>' +
+        '<span class="sk sk--pulse sk--w60"></span></div>';
     }
     return out;
   }
@@ -76,11 +76,11 @@
       (g.iconUrl
         ? '<img class="gicon" src="' + esc(g.iconUrl) + '" alt="" width="34" height="34" loading="lazy">'
         : '<span class="gicon" aria-hidden="true">' + esc(initials(g.name)) + '</span>') +
-      '<span style="flex:1 1 auto;min-width:0">' +
+      '<span class="fill">' +
         (clickable
           ? '<a class="gname" href="' + href + '" title="' + esc(g.name) + '">' + esc(g.name) + '</a>'
           : '<span class="gname" title="' + esc(g.name) + '">' + esc(g.name) + '</span>') +
-        '<span class="gmeta"' + (warn ? ' style="color:var(--warn)"' : '') + '>' + esc(meta(g)) + '</span>' +
+        '<span class="gmeta' + (warn ? ' gmeta--warn' : '') + '">' + esc(meta(g)) + '</span>' +
       '</span>' +
       '<span class="gcount">' + (g.memberCount == null ? '—' : Number(g.memberCount).toLocaleString(CYQ.lang)) + '</span>' +
       '<span class="gstate">' + stateTag(g) + '</span>' +

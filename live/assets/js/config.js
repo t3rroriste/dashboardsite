@@ -5,6 +5,24 @@
 
 window.CYQ_CONFIG = {
 
+  /* --- Les deux adresses du site ---------------------------------------
+     La vitrine et l'application sont sur deux domaines :
+
+       SITE_ORIGIN   cyqbot.eu            index, modules, guide
+       APP_ORIGIN    dashboard.cyqbot.eu  login, welcome, servers, dashboard
+
+     Pourquoi ces deux lignes existent : pour le navigateur, un
+     sous-domaine est un AUTRE site. Un lien relatif « login.html » écrit
+     sur la vitrine chercherait cyqbot.eu/login.html, qui n'y est plus.
+     app.js lit ces deux valeurs et récrit les liens marqués data-site et
+     data-app, ainsi que tous les « Se connecter ».
+
+     Laisse les DEUX chaînes vides pour revenir à un seul domaine, ou pour
+     travailler en local : les liens redeviennent relatifs, et tout
+     fonctionne comme avant. Pas de barre oblique à la fin.                */
+  SITE_ORIGIN: 'https://cyqbot.eu',
+  APP_ORIGIN:  'https://dashboard.cyqbot.eu',
+
   /* --- Discord ---------------------------------------------------------
      CLIENT_ID : l'identifiant de ton application, dans le portail
      développeur Discord → ton application → General Information.
@@ -21,8 +39,18 @@ window.CYQ_CONFIG = {
   /* L'adresse de retour du flux SANS back-end, celui qu'utilise login.html.
      Discord renvoie le jeton dans le fragment de cette URL, et exige
      qu'elle soit déclarée AU CARACTÈRE PRÈS dans le portail développeur →
-     OAuth2 → Redirects. Avec www ici, il faut www là-bas.                 */
-  OAUTH_REDIRECT_URI: window.location.origin + '/login.html',
+     OAuth2 → Redirects. Avec www ici, il faut www là-bas.
+
+     Depuis la scission, login.html n'existe QUE sur le sous-domaine : la
+     valeur se déduit donc d'APP_ORIGIN, et c'est
+     « https://dashboard.cyqbot.eu/login.html » qui doit être déclarée.
+     Une redirection 301 ne suffit pas : Discord compare l'URL telle
+     quelle, avant toute redirection.
+
+     Laissée VIDE, elle est calculée en bas de ce fichier :
+     APP_ORIGIN + '/login.html', ou l'origine courante si APP_ORIGIN est
+     vide. Mets une valeur ici seulement pour forcer autre chose.          */
+  OAUTH_REDIRECT_URI: '',
 
   /* Permissions demandées à l'installation du bot (somme des bits Discord).
      Par défaut : voir/écrire/gérer les salons, gérer les rôles, gérer les
@@ -80,5 +108,26 @@ window.CYQ_CONFIG = {
     });
   } catch (e) {
     /* stockage refusé (navigation privée, cookies bloqués) : on garde le fichier */
+  }
+
+  /* Une origine ne porte jamais de barre oblique finale : sans ce nettoyage,
+     « https://dashboard.cyqbot.eu/ » + '/login.html' donnerait une adresse à
+     double barre, que Discord refuserait. */
+  ['SITE_ORIGIN', 'APP_ORIGIN'].forEach(function (k) {
+    cfg[k] = (cfg[k] || '').replace(/\/+$/, '');
+  });
+
+  /* L'adresse de retour OAuth suit le sous-domaine, puisque login.html n'est
+     que là. Déclarée vide dans le fichier, elle se calcule ici.
+
+     Hors des deux domaines (dossier local, serveur de test, adresse IP),
+     c'est l'origine courante qui sert : sans cela, un essai en local
+     renverrait Discord vers le site en production.                        */
+  if (!cfg.OAUTH_REDIRECT_URI) {
+    var ici = window.location.origin;
+    var surLesVraisDomaines = (cfg.SITE_ORIGIN && ici === cfg.SITE_ORIGIN) ||
+                              (cfg.APP_ORIGIN  && ici === cfg.APP_ORIGIN);
+    cfg.OAUTH_REDIRECT_URI =
+      (surLesVraisDomaines ? cfg.APP_ORIGIN : ici) + '/login.html';
   }
 })(window.CYQ_CONFIG);
