@@ -469,16 +469,17 @@ class Handler(BaseHTTPRequestHandler):
         })
         self.poser_cookie("cyq_sid", sid, DUREE_SESSION)
 
-        # Avec le scope `bot`, Discord indique le serveur choisi. On le note
-        # et on amene directement a son panneau : la personne vient de l'y
-        # ajouter, lui reservir la liste des serveurs serait un pas de trop.
+        # Avec le scope `bot`, Discord indique le serveur ou le bot vient d'etre
+        # ajoute. On le NOTE, mais on n'y emmene pas d'office : on arrive
+        # toujours sur le choix du serveur. Ouvrir directement le panneau de
+        # ce serveur-la etait une supposition de trop — on se connecte le plus
+        # souvent pour regler un serveur deja configure.
         gid = (params.get("guild_id") or [None])[0]
         if gid and gid.isdigit():
             with _verrou_fichier:
                 tout = lire_reglages()
                 tout[gid] = {**tout.get(gid, {}), "botPresent": True}
                 ecrire_reglages(tout)
-            return self.rediriger(APP + "dashboard.html?guild=" + urllib.parse.quote(gid))
 
         self.rediriger(APP + "servers.html")
 

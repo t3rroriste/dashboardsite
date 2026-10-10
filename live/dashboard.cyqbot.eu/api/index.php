@@ -325,16 +325,21 @@ if ($chemin === '/auth/callback' && $methode === 'GET') {
             : null,
     ];
 
-    /* Avec le scope `bot`, Discord indique le serveur choisi. On le note et on
-       amène directement à son panneau : la personne vient de l'y ajouter, lui
-       reservir la liste des serveurs serait un pas de trop. */
+    /* Avec le scope `bot`, Discord indique le serveur où le bot vient d'être
+       ajouté. On le NOTE — c'est su, pas deviné — mais on n'y emmène pas
+       d'office : on arrive toujours sur le choix du serveur.
+
+       La version précédente ouvrait directement le panneau de ce serveur-là.
+       C'est une supposition de trop : on se connecte le plus souvent pour
+       régler un serveur DÉJÀ configuré, pas celui qu'on vient d'ajouter, et
+       atterrir sans l'avoir demandé dans un panneau vide désoriente. Le
+       choix du serveur coûte un clic et montre ce qu'on a. */
     $gid = (string)($_GET['guild_id'] ?? '');
     if ($gid !== '' && ctype_digit($gid)) {
         modifier_reglages(function (array $tout) use ($gid): array {
             $tout[$gid] = array_merge($tout[$gid] ?? [], ['botPresent' => true]);
             return $tout;
         });
-        rediriger($panneau . 'dashboard.html?guild=' . rawurlencode($gid));
     }
     rediriger($panneau . 'servers.html');
 }
