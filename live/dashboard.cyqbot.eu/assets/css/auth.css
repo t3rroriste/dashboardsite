@@ -55,8 +55,78 @@
 .pill--discord {
   gap: 10px;
   padding-left: 22px;
+
+  /* Le reflet est découpé par la pilule elle-même : il ne déborde jamais
+     sur la page. `isolation` enferme le mode de fusion dans ce bouton,
+     sinon il irait chercher le fond de la section pour se composer. */
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 260ms var(--e-out), background 200ms var(--e-soft),
+              box-shadow 300ms var(--e-soft);
 }
 .pill--discord svg { flex: 0 0 auto; }
+
+/* ---- le reflet qui balaie le bouton -----------------------------------
+   Une bande inclinée qui traverse en boucle tant que la souris reste là.
+
+   Elle est TEINTÉE, et pas blanche : la pilule est déjà crème, et vire au
+   blanc pur au survol — un reflet blanc dessus ne se verrait pas. Le bleu
+   de Discord, lui, se lit sur le crème, et passe aussi sur le disque
+   sombre de la flèche. Le cœur de la bande garde une pointe de blanc, qui
+   ne sert que là, sur le disque.
+
+   Elle ne s'anime qu'au survol ou au focus : au repos, le bouton ne bouge
+   pas. */
+.pill--discord::after {
+  content: "";
+  position: absolute; top: -60%; bottom: -60%; left: 0;
+  width: 38%;
+  background: linear-gradient(100deg,
+    transparent 10%,
+    rgba(88,101,242,.34) 38%,
+    rgba(255,255,255,.72) 50%,
+    rgba(88,101,242,.34) 62%,
+    transparent 90%);
+  transform: translateX(-180%) rotate(8deg);
+  opacity: 0;
+  pointer-events: none;
+}
+.pill--discord:hover,
+.pill--discord:focus-visible {
+  /* Il se soulève. Deux pixels : assez pour que l'œil le voie décoller,
+     pas assez pour déplacer quoi que ce soit autour. */
+  transform: translateY(-2px);
+  /* La lumière reste pendant le survol : un halo aux couleurs de Discord,
+     très diffus, posé sous le bouton — pas un néon autour. */
+  box-shadow: 0 10px 30px -12px rgba(88, 101, 242, .85),
+              0 2px 10px -6px rgba(0, 0, 0, .5);
+}
+.pill--discord:hover::after,
+.pill--discord:focus-visible::after {
+  /* Vitesse CONSTANTE, et pas une courbe d'assouplissement : une lumière
+     qui passe ne ralentit pas en chemin. Avec --e-out, la bande traversait
+     en 300 ms puis attendait hors du bouton — on ne la voyait jamais. */
+  animation: pilule-reflet 1400ms linear infinite;
+}
+/* L'enfoncement l'emporte sur le soulèvement : on repart de zéro, sinon
+   les deux transformations s'annulent à moitié et le clic ne se sent pas. */
+.pill--discord:active { transform: translateY(0) scale(.97); }
+
+/* La traversée occupe 55 % du cycle, le reste est une pause : sans elle,
+   le reflet tournerait en continu et deviendrait un gyrophare. */
+@keyframes pilule-reflet {
+  0%        { transform: translateX(-120%) rotate(8deg); opacity: 0; }
+  8%        { opacity: 1; }
+  45%       { opacity: 1; }
+  55%       { transform: translateX(300%) rotate(8deg);  opacity: 0; }
+  100%      { transform: translateX(300%) rotate(8deg);  opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pill--discord::after { animation: none !important; opacity: 0; }
+  .pill--discord:hover, .pill--discord:focus-visible { transform: none; }
+}
 
 /* Le disque qui porte le logo Discord à côté du titre. Quatrième famille
    de formes de la D.A. (coque, carte, pilule, disque) : c'est elle. */
