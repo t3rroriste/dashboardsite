@@ -15,6 +15,16 @@
 
 AddDefaultCharset UTF-8
 
+# ------------------------------------------------- page d'accueil --------
+# Quelle page servir quand l'adresse ne nomme aucun fichier.
+#
+# Un seul fichier pour les deux sites : la vitrine a un index.html, le
+# panneau n'en a pas — sa porte d'entrée est login.html. Apache essaie ces
+# noms dans l'ordre et ignore ceux qui n'existent pas. Sans cette ligne,
+# dashboard.cyqbot.eu/ tombait sur le default_index.html de LWS, d'où la
+# page « Félicitations, votre domaine a bien été créé ».
+DirectoryIndex index.html login.html
+
 # ------------------------------------------------------------- durées ----
 <IfModule mod_expires.c>
   ExpiresActive On
