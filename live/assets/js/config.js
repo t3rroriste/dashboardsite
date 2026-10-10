@@ -63,15 +63,17 @@ window.CYQ_CONFIG = {
      le site fonctionne, se navigue, et affiche ses états vides réels
      au lieu d'inventer des données.
      Exemple : 'https://api.cyq.gg'                                        */
-  /* VIDE, et c'est voulu : l'hébergement LWS est statique, il ne sert que
-     des fichiers. Rien ne répond sous /api. Tant que cette chaîne contenait
-     '/api', chaque « Se connecter » et chaque écran du panneau partaient
-     sur une adresse qui renvoie 404. Vide, le site bascule sur le flux
-     Discord sans back-end (login.html) et le panneau affiche ses états
-     « pas d'API » au lieu d'une page d'erreur du serveur.
-     Le jour où l'API de cogs/dashboard_api.py est joignable, mets son
-     adresse ici : tout le site la reprend sans autre changement.          */
-  API_BASE: '',
+  /* L'API vit dans le dossier `api/` du panneau, et elle est écrite en PHP
+     — le seul langage que l'hébergement mutualisé LWS sache exécuter. Elle
+     est donc sur LA MÊME ORIGINE que les pages du panneau : pas de CORS,
+     pas de cookie tiers, rien à héberger ailleurs.
+
+     L'adresse est écrite en entier plutôt qu'en '/api' parce que ce fichier
+     sert aussi la vitrine, où /api n'existe pas.
+
+     Remets cette chaîne à VIDE pour revenir au site sans back-end : les
+     écrans affichent alors leurs états vides au lieu d'erreurs.           */
+  API_BASE: 'https://dashboard.cyqbot.eu/api',
 
   /* --- Divers ---------------------------------------------------------- */
   SITE_NAME: 'CreateYourQueue',
