@@ -4,3 +4,7 @@ dist/
 *.local
 .env
 .env.*
+
+# Le modèle, lui, doit être versionné : il ne contient aucun secret, et c'est
+# lui qu'on copie pour créer le vrai .env sur la machine.
+!api/.env.example

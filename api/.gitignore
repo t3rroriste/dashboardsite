@@ -1,0 +1,8 @@
+# Le secret. Jamais partagé, jamais mis en ligne.
+.env
+
+# Les réglages enregistrés par le panneau.
+data/
+
+# Le modele, lui, se versionne : il ne contient aucun secret.
+!.env.example
