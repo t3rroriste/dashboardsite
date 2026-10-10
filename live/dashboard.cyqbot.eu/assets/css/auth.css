@@ -88,7 +88,7 @@
 
    Seuls transform et opacity sont animés : aucune mise en page ne bouge. */
 
-.auth__mark { --liaison: 2600ms; }
+.auth__mark { --liaison: 1900ms; }
 
 .auth__tie {
   position: relative;
@@ -148,7 +148,7 @@
    que le bouton promet. */
 .auth__step:has(.pill--discord:hover) .auth__mark,
 .auth__step:has(.pill--discord:focus-visible) .auth__mark {
-  --liaison: 1150ms;
+  --liaison: 800ms;
 }
 .auth__step:has(.pill--discord:hover) .auth__tie::before,
 .auth__step:has(.pill--discord:focus-visible) .auth__tie::before {
