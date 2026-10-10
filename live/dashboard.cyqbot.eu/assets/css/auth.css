@@ -94,9 +94,9 @@
 }
 .pill--discord:hover,
 .pill--discord:focus-visible {
-  /* Il se soulève. Deux pixels : assez pour que l'œil le voie décoller,
-     pas assez pour déplacer quoi que ce soit autour. */
-  transform: translateY(-2px);
+  /* Il se soulève. Quatre pixels : assez pour que le décollage se voie
+     franchement, pas assez pour déplacer quoi que ce soit autour. */
+  transform: translateY(-4px);
   /* La lumière reste pendant le survol : un halo aux couleurs de Discord,
      très diffus, posé sous le bouton — pas un néon autour. */
   box-shadow: 0 10px 30px -12px rgba(88, 101, 242, .85),
@@ -123,9 +123,31 @@
   100%      { transform: translateX(300%) rotate(8deg);  opacity: 0; }
 }
 
+/* ---- « Ajouter CreateYourQueue » -------------------------------------
+   La pilule de base réserve sa marge de droite au disque de la flèche :
+   `padding: 0 8px 0 22px`. Ce bouton-ci n'a pas de flèche, donc son texte
+   arrivait à 8 px du bord alors qu'il part de 22 px à gauche — d'où
+   l'impression de travers. On rétablit une marge égale des deux côtés.
+
+   Il se soulève comme l'autre, avec une ombre qui s'étire sous lui au
+   lieu d'un halo coloré : ce bouton-ci n'appartient pas à Discord. */
+.pill--invite {
+  padding: 0 24px;
+  transition: transform 260ms var(--e-out), background 200ms var(--e-soft),
+              box-shadow 300ms var(--e-soft);
+}
+.pill--invite:hover,
+.pill--invite:focus-visible {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 28px -16px rgba(0, 0, 0, .95),
+              0 4px 10px -6px rgba(0, 0, 0, .6);
+}
+.pill--invite:active { transform: translateY(0) scale(.97); }
+
 @media (prefers-reduced-motion: reduce) {
   .pill--discord::after { animation: none !important; opacity: 0; }
-  .pill--discord:hover, .pill--discord:focus-visible { transform: none; }
+  .pill--discord:hover, .pill--discord:focus-visible,
+  .pill--invite:hover,  .pill--invite:focus-visible { transform: none; }
 }
 
 /* Le disque qui porte le logo Discord à côté du titre. Quatrième famille

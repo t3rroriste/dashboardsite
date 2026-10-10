@@ -152,15 +152,46 @@
 
   /* ------------------------------------------------------- étape 2 : rendu */
 
+  /* L'avatar par défaut de Discord, pour qui n'en a pas posé.
+     Son numéro se lit dans l'identifiant : les bits de l'horodatage,
+     décalés de 22, modulo 6. Un identifiant Discord dépasse 2^53, donc
+     Number() en perdrait la fin — d'où BigInt. Les comptes d'avant le
+     changement de pseudos gardent, eux, leur discriminateur modulo 5.
+     Si quoi que ce soit échoue, on retombe sur les initiales plutôt que
+     sur un trou. */
+  function avatarParDefaut(u) {
+    try {
+      if (u.discriminator && u.discriminator !== '0') {
+        return (Number(u.discriminator) % 5);
+      }
+      return Number((BigInt(u.id) >> 22n) % 6n);
+    } catch (e) {
+      return null;
+    }
+  }
+
   function rendreQui(u) {
     var puce = document.querySelector('[data-who]');
     if (!u || !puce) return;
     var av = puce.querySelector('[data-who-avatar]');
     var nm = puce.querySelector('[data-who-name]');
-    nm.textContent = u.global_name || u.username || '';
+
+    /* Le pseudo unique, préfixé de @ : c'est lui qui identifie vraiment le
+       compte. Le nom d'affichage, lui, peut être n'importe quoi — « x »,
+       par exemple — et ne dit pas à qui on est connecté. */
+    nm.textContent = '@' + (u.username || u.global_name || '');
+    nm.setAttribute('title', u.global_name || u.username || '');
+
+    var src = null;
     if (u.avatar) {
-      av.innerHTML = '<img src="https://cdn.discordapp.com/avatars/' + esc(u.id) + '/' +
-        esc(u.avatar) + '.png?size=64" alt="" width="28" height="28" ' +
+      src = 'https://cdn.discordapp.com/avatars/' + esc(u.id) + '/' + esc(u.avatar) + '.png?size=64';
+    } else {
+      var n = avatarParDefaut(u);
+      if (n !== null) src = 'https://cdn.discordapp.com/embed/avatars/' + n + '.png';
+    }
+
+    if (src) {
+      av.innerHTML = '<img src="' + src + '" alt="" width="28" height="28" ' +
         'style="width:100%;height:100%;border-radius:50%;object-fit:cover">';
     } else {
       av.textContent = initiales(u.global_name || u.username);

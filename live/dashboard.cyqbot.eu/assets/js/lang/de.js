@@ -263,7 +263,7 @@ window.CYQ_I18N.de = {
   "au.inviteLead": "Das Panel stellt einen Bot ein, der schon da ist. Füge ihn dem Server hinzu, den du einrichten willst, und komm zurück.",
   "au.inviteBtn": "CreateYourQueue hinzufügen",
   "au.inviteNote": "Das Discord-Fenster öffnet sich daneben. Du brauchst „Server verwalten“ auf dem gewählten Server.",
-  "au.thenOpen": "Dann das Panel öffnen",
+  "au.thenOpen": "Dashboard",
   "au.owner": "Inhaber",
   "au.manager": "Server verwalten",
   "au.noGuild": "Kein Server, den du verwalten darfst. Lade den Bot ein oder bitte um „Server verwalten“.",

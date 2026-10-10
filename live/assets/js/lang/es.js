@@ -263,7 +263,7 @@ window.CYQ_I18N.es = {
   "au.inviteLead": "El panel configura un bot que ya está ahí. Añádelo al servidor que quieras ajustar y vuelve aquí.",
   "au.inviteBtn": "Añadir CreateYourQueue",
   "au.inviteNote": "La ventana de Discord se abre al lado. Necesitas «Gestionar servidor» en el servidor elegido.",
-  "au.thenOpen": "Luego abre el panel",
+  "au.thenOpen": "Dashboard",
   "au.owner": "Propietario",
   "au.manager": "Gestionar servidor",
   "au.noGuild": "Ningún servidor que puedas gestionar. Invita al bot o pide el permiso «Gestionar servidor».",

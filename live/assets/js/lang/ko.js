@@ -263,7 +263,7 @@ window.CYQ_I18N.ko = {
   "au.inviteLead": "패널은 이미 들어와 있는 봇을 설정합니다. 설정할 서버에 봇을 추가한 뒤 여기로 돌아오세요.",
   "au.inviteBtn": "CreateYourQueue 추가",
   "au.inviteNote": "디스코드 창이 옆에 열립니다. 선택한 서버에서 ‘서버 관리’ 권한이 필요합니다.",
-  "au.thenOpen": "그다음 패널 열기",
+  "au.thenOpen": "Dashboard",
   "au.owner": "소유자",
   "au.manager": "서버 관리",
   "au.noGuild": "관리할 수 있는 서버가 없습니다. 봇을 초대하거나 ‘서버 관리’ 권한을 요청하세요.",

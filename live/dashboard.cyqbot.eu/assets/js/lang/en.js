@@ -263,7 +263,7 @@ window.CYQ_I18N.en = {
   "au.inviteLead": "The panel configures a bot that is already there. Add it to the server you want to set up, then come back here.",
   "au.inviteBtn": "Add CreateYourQueue",
   "au.inviteNote": "The Discord window opens alongside. You need “Manage Server” on the server you pick.",
-  "au.thenOpen": "Then open the panel",
+  "au.thenOpen": "Dashboard",
   "au.owner": "Owner",
   "au.manager": "Manage Server",
   "au.noGuild": "No server you are allowed to manage. Invite the bot, or ask for the “Manage Server” permission.",
